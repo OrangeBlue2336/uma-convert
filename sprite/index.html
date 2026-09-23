@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>스프라이트 변환기 - UmaConvert</title>
+  <!-- 파비콘 · 폰트 · base.css: 모든 페이지가 함께 쓰는 조각입니다.
+       내용을 바꾸려면 _partials/head-common.html을 고친 뒤 `node build.mjs`를 실행하세요.
+       (직접 사용하려면 realfavicongenerator.net에서 받은 코드를 그 파일에 붙여넣으면 됩니다.)
+       이 블록 안을 여기서 직접 고쳐도 다음 build 때 사라집니다. -->
+  <!-- BUILD:START head-common.html -->
+  <link rel="icon" type="image/png" href="../favicon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/svg+xml" href="../favicon/favicon.svg">
+  <link rel="shortcut icon" href="../favicon/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="../favicon/apple-touch-icon.png">
+  <link rel="manifest" href="../favicon/site.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <!-- BUILD:END -->
+  <link rel="stylesheet" href="../assets/css/converter.css">
+</head>
+<body>
+  <div class="page">
+    <header>
+      <nav class="crumbs" aria-label="현재 위치">
+        <a href="../">UmaConvert</a>
+        <span aria-hidden="true">/</span>
+        <span>스프라이트</span>
+      </nav>
+      <h1 class="page-title">스프라이트 변환기</h1>
+      <p class="lede">
+        텍스처 파일을 PNG로 바꾸고, 안에 든 조각을 한 장씩 저장합니다.
+      </p>
+    </header>
+
+    <div class="tabs" role="tablist" aria-label="작업 단계">
+      <button class="tab" role="tab" id="tab-open" aria-controls="panel-open" aria-selected="true">파일 열기</button>
+      <button class="tab" role="tab" id="tab-result" aria-controls="panel-result" aria-selected="false" disabled>결과</button>
+    </div>
+
+    <!-- 1. 파일 열기 -->
+    <section class="tab-panel" id="panel-open" role="tabpanel" aria-labelledby="tab-open">
+      <label class="dropzone" id="dropzone">
+        <input type="file" id="file-input">
+        <i class="mark tl"></i><i class="mark tr"></i><i class="mark bl"></i><i class="mark br"></i>
+        <span class="dropzone-title">파일을 여기에 끌어다 놓으세요</span>
+        <span class="dropzone-sub">또는 이 영역을 눌러 파일을 고르세요</span>
+        <span class="btn primary" aria-hidden="true">파일 선택</span>
+      </label>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+      <p class="hint">
+        heroes_tex, note_tex처럼 확장자가 없는 텍스처 파일을 사용합니다.<br>
+        파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.
+      </p>
+    </section>
+
+    <!-- 2. 결과 -->
+    <section class="tab-panel" id="panel-result" role="tabpanel" aria-labelledby="tab-result" hidden>
+      <div class="result-bar">
+        <div>
+          <h2 class="result-title" id="result-title"></h2>
+          <p class="result-info" id="result-info"></p>
+          <select class="texture-select" id="texture-select" aria-label="텍스처 선택" hidden></select>
+        </div>
+        <div class="result-actions">
+          <button class="btn primary" id="btn-png" type="button">PNG 저장</button>
+          <button class="btn" id="btn-zip" type="button">조각 ZIP 저장</button>
+        </div>
+      </div>
+
+      <div class="result-grid">
+        <div class="viewer">
+          <div class="panel-tools">
+            <label class="check"><input type="checkbox" id="toggle-bounds" checked> 조각 경계 표시</label>
+            <div class="segmented" role="group" aria-label="보기 크기">
+              <button type="button" data-zoom="fit" aria-pressed="true">화면에 맞춤</button>
+              <button type="button" data-zoom="0.5" aria-pressed="false">50%</button>
+              <button type="button" data-zoom="1" aria-pressed="false">100%</button>
+            </div>
+          </div>
+          <div class="viewer-scroll" id="viewer-scroll">
+            <div class="stage show-bounds" id="stage"></div>
+          </div>
+          <p class="selection-info" id="selection-info">조각을 누르면 이름과 크기가 여기에 나옵니다.</p>
+        </div>
+
+        <aside class="sprite-panel" aria-label="조각 목록">
+          <div class="panel-tools">
+            <input class="search" id="sprite-search" type="search" placeholder="조각 이름 검색" aria-label="조각 이름 검색">
+            <span class="sprite-count" id="sprite-count"></span>
+          </div>
+          <ul class="sprite-list" id="sprite-list"></ul>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="../assets/js/sprite/main.js"></script>
+</body>
+</html>
