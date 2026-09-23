@@ -17,14 +17,14 @@ export const tools = [
     input: "heroes_tex, note_tex 같은 텍스처 파일",
     output: "PNG 한 장, 조각별 PNG를 묶은 ZIP",
     href: "sprite/",
-    image: "assets/img/tile-sprite.png",
+    image: "assets/img/tile/tile-sprite.png",
     status: "ready",
   },
   {
     title: "라이브 가사",
     desc: "라이브 곡의 가사 데이터를 읽을 수 있는 텍스트로 바꿉니다.",
     href: "lyrics/",
-    image: "assets/img/tile-lyrics.png",
+    image: "assets/img/tile/tile-lyrics.png",
     status: "soon",
   },
 ];
