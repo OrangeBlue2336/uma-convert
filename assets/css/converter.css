@@ -171,6 +171,21 @@
   gap: 8px;
 }
 
+/* 가사는 줄바꿈과 공백 자체가 내용이므로 textarea 대신 읽기 전용 평문 영역으로 보여 줍니다. */
+.lyrics-preview {
+  max-height: min(70vh, 700px);
+  margin: 0;
+  padding: 18px 20px;
+  overflow: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: 14px/1.75 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .result-grid {
   --panel-height: min(74vh, 700px);
   display: grid;

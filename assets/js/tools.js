@@ -14,7 +14,7 @@ export const tools = [
   {
     title: "스프라이트",
     desc: "텍스처 파일을 PNG로 바꾸고, 안에 든 조각을 한 장씩 저장합니다.",
-    input: "heroes_tex, note_tex 같은 텍스처 파일",
+    input: "Root/atlas/ 에서 발견되는 _tex 파일",
     output: "PNG 한 장, 조각별 PNG를 묶은 ZIP",
     href: "sprite/",
     image: "assets/img/tile/tile-sprite.png",
@@ -23,8 +23,17 @@ export const tools = [
   {
     title: "라이브 가사",
     desc: "라이브 곡의 가사 데이터를 읽을 수 있는 텍스트로 바꿉니다.",
+    input: "Root/live/musicscores/ 에서 발견되는 _lyrics 파일",
+    output: "시간표가 있는 TXT 파일",
     href: "lyrics/",
     image: "assets/img/tile/tile-lyrics.png",
+    status: "ready",
+  },
+  {
+    title: ".usm 영상 데이터 변환",
+    desc: "암호화 된 인게임 영상 데이터를 변환합니다.",
+    href: "usm/",
+    image: "assets/img/tile/tile-usm.png",
     status: "soon",
   },
 ];
