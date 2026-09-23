@@ -31,7 +31,9 @@ export const tools = [
   },
   {
     title: ".usm 영상 데이터 변환",
-    desc: "암호화 된 인게임 영상 데이터를 변환합니다.",
+    desc: "암호화 된 인게임 영상 데이터를 h264, hca 파일로 나눠 사용자가 ffmpeg로 변환할 수 있게 합니다.",
+    input: ".usm 파일",
+    output: "h264 파일과 hca 파일이 묶인 ZIP",
     href: "usm/",
     image: "assets/img/tile/tile-usm.png",
     status: "soon",
