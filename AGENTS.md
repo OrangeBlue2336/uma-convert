@@ -28,6 +28,25 @@ GitHub Pages로 배포하며, 서버도 빌드 과정도 없습니다. 순수 HT
   2. 결과 PNG를 UABEA나 UnityPy(파이썬, `pip install UnityPy`) 같은 다른 도구의 결과와 픽셀 비교
      (파이썬 예시는 아래 "회귀 검증 방법" 참고)
   사용자가 테스트용 텍스처 파일 몇 개를 저장소 밖 어딘가에 가지고 있을 수 있으니, 없다면 요청하세요.
+- **`core/usm.js`를 건드리면 청크 디먹싱과 복호화를 모두 재검증하세요.** `.usm` 청크를 그대로 이어
+  붙인 결과가 CRID `@UTF` 표에 적힌 원본 filesize와 정확히 같아야 하고(`tests/usm-cli.mjs`로 확인),
+  **이것만으로는 부족합니다** — XOR은 길이를 바꾸지 않으므로 filesize 일치는 청크 경계 파싱만
+  검증할 뿐 복호화 내용까지 보장하지 않습니다. 영상은 파일 내부 이름에 `_no_encrypted` 표시가 있어도
+  키 없이는 깨진다는 것이 실사용 테스트로 확인됐습니다. 그래서 지금은 파일 이름으로 자동판단하지 않고
+  `convertUsm`이 기본으로 항상 키를 적용합니다. 오디오는 형식에 따라 정반대입니다 — HCA는 키를
+  적용하면 무음이 되고, ADX는 반대로 키를 적용하지 않으면 디코더가 몇 프레임 만에 멈춥니다. 그래서
+  오디오는 내용(헤더 시그니처)으로 형식을 먼저 판별하고(`detectAudioFormat`) ADX일 때만 키를
+  적용합니다(`buildAudioTracks`). 오디오 형식을 나타내는 USM 내부 "audio_codec" 숫자 필드는
+  게임/버전마다 뜻이 다른 것으로 보여 신뢰하지 않습니다. 복호화 결과를 눈으로 검증하려면
+  `ffmpeg -i video.h264 -frames:v N -f null -` 로 디코드 오류(`Reference N >= 3` 등)가 없는지, ADX는
+  `ffmpeg -i audio_N.adx x.wav && ffprobe -show_entries format=duration x.wav`로 길이가 원본과
+  맞는지 확인하세요. 키 값(`DEFAULT_KEY_HI/LO`)과 상위/하위 32비트 순서는 사용자가 실사용 중인 값을
+  그대로 넣어 둔 것입니다. 자세한 내용과 검증 이력은 파일 머리말 주석과 `plan.md`에 있습니다.
+- **`wavFileName`(같은 파일)이 반환하는 이름에는 원본 오디오 확장자가 그대로 들어갑니다**
+  (`audio_0.adx.wav`처럼, `audio_0.wav`가 아님). vgmstream-web 같은 브라우저 변환 사이트에
+  `audio_0.adx`를 끌어다 놓으면 확장자를 지우지 않고 뒤에 `.wav`만 붙여서 내려주기 때문에, "다음 단계"
+  카드가 안내하는 ffmpeg 합치기 명령도 이 이름과 맞아야 실제로 동작합니다. 이 함수를 고칠 일이 있으면
+  이 동작(원본 확장자 유지)을 깨지 마세요.
 - **파비콘·폰트·base.css 링크는 손으로 맞추지 말고 반드시 빌드로 반영하세요.** 이 세 가지는
   `_partials/head-common.html` 한 곳에서 관리되고, 각 페이지의 `<!-- BUILD:START head-common.html -->`
   ~ `<!-- BUILD:END -->` 사이에 `node build.mjs`가 채워 넣습니다. 이 블록 안을 직접 고치면 다음 빌드 때
@@ -46,6 +65,8 @@ GitHub Pages로 배포하며, 서버도 빌드 과정도 없습니다. 순수 HT
 ```
 index.html                 메인 페이지
 sprite/index.html          스프라이트 변환기 페이지
+lyrics/index.html          라이브 가사 변환기 페이지
+usm/index.html              .usm 영상 데이터 변환기 페이지
 favicon/                   파비콘 파일 일체 (realfavicongenerator.net 산출물이 들어갈 자리)
 assets/
   css/
@@ -56,7 +77,7 @@ assets/
   js/
     tools.js                 메인 페이지 타일 목록의 데이터. 새 변환기는 여기 한 항목만 추가하면 노출됨
     home.js                  tools.js를 읽어 타일 DOM을 그림
-    core/                    번들 해석 + 픽셀 복원. DOM 의존 금지 (위 규칙 참고)
+    core/                    파일 해석 + 복원. DOM 의존 금지 (위 규칙 참고)
       reader.js                바이트 읽기 도우미
       lz4.js                   LZ4 블록 압축 해제
       unityfs.js               UnityFS 번들 머리글 파싱, 내부 파일 추출
@@ -67,19 +88,29 @@ assets/
       sprites.js               Sprite 오브젝트 -> 잘라낼 영역 목록, 실제 자르기
       convert.js               위 전부를 묶는 진입점 (convertBundle)
       decoders/                텍스처 형식별 디코더. 새 형식 추가는 여기 + index.js 한 줄
+      lyrics.js                라이브 가사 에셋 파싱 -> 자막 형식 변환
+      usm.js                   CRI USM 컨테이너 파싱 + 청크 복호화 + h264/hca 분리 (자세한 설계는 파일
+                                머리말 주석과 저장소 최상위 `plan.md` 참고)
       errors.js                ConvertError: 사용자에게 그대로 보여줘도 되는 오류
     encode/
       png.js                   RGBA -> PNG. canvas를 쓰지 않는 이유는 파일 안 주석 참고
-      zip.js                   여러 PNG를 압축 없이 ZIP으로 묶기
+      zip.js                   여러 파일을 압축 없이 ZIP으로 묶기 (스프라이트 PNG, usm의 h264/hca 등 공용)
       crc32.js                 PNG/ZIP 공용
     sprite/                   스프라이트 페이지 전용 화면 코드 (다른 변환기는 건드리지 않음)
       main.js                   파일 열기~저장까지 전체 배선
       viewer.js                 이미지 위에 조각 영역을 겹쳐 그리는 뷰어
       list.js                   오른쪽 조각 목록 패널
+    lyrics/main.js            라이브 가사 페이지 전용 화면 코드
+    usm/main.js               .usm 페이지 전용 화면 코드 (파일 열기, 키 적용 토글, ZIP 저장,
+                              결과에 맞춘 "다음 단계" 명령 렌더링)
     ui/                       여러 변환기 페이지가 함께 쓰는 화면 도우미
       tabs.js                   탭 전환
       download.js               파일 저장, 이름 정리
-tests/convert-cli.mjs      화면 없이 core+encode만 실행하는 명령줄 도구 (회귀 확인용)
+      clipboard.js              명령줄 복사 버튼 (usm의 "다음 단계" 카드가 씀)
+tests/convert-cli.mjs      화면 없이 core+encode만 실행하는 명령줄 도구 (스프라이트, 회귀 확인용)
+tests/usm-cli.mjs          화면 없이 core/usm.js만 실행하는 명령줄 도구
+plan.md                    .usm 변환기 설계 조사 기록. 의존성 도입 여부(A/B/C안) 판단과 다음 단계(알파
+                            합성 등)를 다룰 때 먼저 읽으세요.
 ```
 
 ## 새 변환기를 추가하는 절차
