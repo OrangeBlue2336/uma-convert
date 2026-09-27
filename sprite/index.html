@@ -96,6 +96,28 @@
           <ul class="sprite-list" id="sprite-list"></ul>
         </aside>
       </div>
+
+      <div class="correction-bar">
+        <div class="correction-actions">
+          <button class="btn" id="btn-fix-support" type="button">서포트 카드 크기 보정</button>
+          <button class="btn" id="btn-fix-honor" type="button">칭호 크기 보정</button>
+        </div>
+        <p class="correction-hint">
+          일부 조각은 비율이 짜부러진 채로 들어 있습니다. 위에서 조각을 눌러 고른 뒤(조각이 없는
+          텍스처는 그대로) 눌러서 정해진 크기로 강제로 맞춰 보세요.
+        </p>
+      </div>
+
+      <div class="correction-result" id="correction-result" hidden>
+        <div class="correction-result-head">
+          <div>
+            <p class="correction-result-title" id="correction-result-title"></p>
+            <p class="correction-result-size" id="correction-result-size"></p>
+          </div>
+          <button class="btn primary" id="correction-result-save" type="button">보정된 이미지 저장</button>
+        </div>
+        <div class="correction-result-preview" id="correction-result-preview"></div>
+      </div>
     </section>
   </div>
 

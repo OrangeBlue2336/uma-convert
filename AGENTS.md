@@ -100,6 +100,7 @@ assets/
       main.js                   파일 열기~저장까지 전체 배선
       viewer.js                 이미지 위에 조각 영역을 겹쳐 그리는 뷰어
       list.js                   오른쪽 조각 목록 패널
+      correction.js             "크기 보정" 기능. RGBA를 정해진 크기로 강제 리사이즈 (아래 별도 절 참고)
     lyrics/main.js            라이브 가사 페이지 전용 화면 코드
     usm/main.js               .usm 페이지 전용 화면 코드 (파일 열기, 키 적용 토글, ZIP 저장,
                               결과에 맞춘 "다음 단계" 명령 렌더링)
@@ -139,6 +140,27 @@ plan.md                    .usm 변환기 설계 조사 기록. 의존성 도입
 3. 임의 바이트로 만든 테스트 벡터를 UnityPy(`from UnityPy.export.Texture2DConverter import parse_image_data`)
    같은 기존 도구로 돌려 기대값을 만들고, 새 디코더 결과와 바이트 단위로 비교하세요. 이 저장소를 만들 때도
    이 방식으로 11개 형식을 전부 검증했습니다.
+
+## 스프라이트 "크기 보정" 기능(`assets/js/sprite/correction.js`)이 canvas를 쓰는 이유
+
+서포트 카드, 칭호처럼 일부 조각은 게임 데이터 안에서부터 이미 비율이 눌린 채(가로나 세로가 늘어난
+채)로 저장되어 있습니다. 실제 게임도 이 조각을 쓸 때 항상 같은 고정 크기로 늘려서 쓰므로, 이 기능은
+지금 고른 조각(또는 조각 정보가 없는 텍스처는 전체 이미지)을 그 고정 크기로 강제로 리샘플링해
+원래 비율로 되돌립니다. 서포트 카드는 1536×2048, 칭호는 512×105로 하드코딩되어 있습니다
+(`CORRECTION_PRESETS`).
+
+**이 파일만 예외적으로 canvas의 `drawImage` 확대/축소를 씁니다.** `encode/png.js`가 `canvas.toBlob()`을
+피하는 이유(반투명 픽셀의 색이 미세하게 바뀜, 파일 머리말 주석 참고)와 이 기능은 목적이 다릅니다 —
+여기서는 "크기 자체를 바꾸는" 것이 목적이라 애초에 원본 픽셀을 그대로 보존할 수 없고, 대신 확대/축소
+시 매끄러운 보간이 필요합니다. 그래서 `resizeRGBA`는 `putImageData`로 원본을 넣은 뒤 `drawImage`로
+크기를 바꾸고 `getImageData`로 다시 꺼냅니다. 이 예외를 다른 저장 경로(PNG 저장, ZIP 저장 등)로
+번지게 하지 마세요 — 그쪽은 지금처럼 `encode/png.js`를 그대로 씁니다.
+
+새 조각 종류에서 같은 문제(비율이 눌려 나옴)를 발견하면 `CORRECTION_PRESETS`에 `{ label, width,
+height }`를 하나 추가하고, `sprite/index.html`에 버튼을 하나 더 만든 뒤 `assets/js/sprite/main.js`의
+`fixSupportButton`/`fixHonorButton` 배선을 본떠 연결하면 됩니다. 대상 선택 순서(클릭한 조각 ->
+조각이 하나뿐인 텍스처 -> 조각 정보가 아예 없는 텍스처는 전체 이미지 -> 그 외엔 안내 문구)는
+`pickCorrectionSource`(`main.js`)에 있습니다.
 
 ## 타입트리 공용 문자열 표(`commonStrings.js`)가 뭔가요
 

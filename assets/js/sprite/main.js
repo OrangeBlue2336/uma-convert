@@ -10,6 +10,7 @@ import { createTabs } from "../ui/tabs.js";
 import { saveBlob, safeFileName, uniqueNames } from "../ui/download.js";
 import { createViewer } from "./viewer.js";
 import { createSpriteList } from "./list.js";
+import { CORRECTION_PRESETS, resizeRGBA } from "./correction.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -22,12 +23,20 @@ const textureSelect = $("texture-select");
 const pngButton = $("btn-png");
 const zipButton = $("btn-zip");
 const selectionInfo = $("selection-info");
+const fixSupportButton = $("btn-fix-support");
+const fixHonorButton = $("btn-fix-honor");
+const correctionResult = $("correction-result");
+const correctionTitle = $("correction-result-title");
+const correctionSize = $("correction-result-size");
+const correctionPreview = $("correction-result-preview");
+const correctionSaveButton = $("correction-result-save");
 
 const tabs = createTabs();
 
 /** 지금 화면에 보이는 결과 */
 let current = null; // { texture, rgba }
 let loaded = null; // { textures } 파일에서 읽은 전체 텍스처 목록
+let selectedIndex = null; // 지금까지 눌러서 고른 조각 번호. 안 골랐으면 null
 
 const viewer = createViewer({
   scrollEl: $("viewer-scroll"),
@@ -111,6 +120,8 @@ function showTexture(next) {
 }
 
 function resetSelectionInfo() {
+  selectedIndex = null;
+  hideCorrectionResult();
   selectionInfo.classList.remove("is-error");
   selectionInfo.textContent = current.texture.sprites.length
     ? "조각을 누르면 이름과 크기가 여기에 나옵니다."
@@ -118,6 +129,7 @@ function resetSelectionInfo() {
 }
 
 function selectSprite(index, { scrollList = false, scrollViewer = false } = {}) {
+  selectedIndex = index;
   const sprite = current.texture.sprites[index];
   viewer.select(index, { scroll: scrollViewer });
   list.select(index, { scroll: scrollList });
@@ -150,6 +162,60 @@ for (const button of document.querySelectorAll("[data-zoom]")) {
     }
   });
 }
+
+// ---------- 크기 보정 ----------
+// 서포트 카드, 칭호처럼 게임 데이터 안에서부터 비율이 눌려 저장된 조각을 정해진 크기로 강제로
+// 맞춥니다. 대상은 지금 누른 조각 -> (없으면) 조각이 하나뿐인 텍스처 -> (그것도 없으면, 즉 이
+// 텍스처에 조각 정보가 아예 없으면) 텍스처 전체 이미지 순서로 고릅니다.
+
+/** 지금 보정에 쓸 이미지(이름 + 픽셀 + 크기)를 고릅니다. 여러 조각 중 하나를 못 골랐으면 null. */
+function pickCorrectionSource() {
+  const { texture, rgba } = current;
+
+  if (selectedIndex !== null && texture.sprites[selectedIndex]) {
+    const sprite = texture.sprites[selectedIndex];
+    return { name: sprite.name, ...cropSprite(rgba, texture.width, sprite) };
+  }
+  if (texture.sprites.length === 1) {
+    const sprite = texture.sprites[0];
+    return { name: sprite.name, ...cropSprite(rgba, texture.width, sprite) };
+  }
+  if (texture.sprites.length === 0) {
+    return { name: texture.name, rgba, width: texture.width, height: texture.height };
+  }
+  return null; // 조각이 여러 개인데 아직 하나도 안 골랐음
+}
+
+function hideCorrectionResult() {
+  correctionResult.hidden = true;
+  correctionPreview.replaceChildren();
+}
+
+function applyCorrection(presetKey) {
+  const preset = CORRECTION_PRESETS[presetKey];
+  const source = pickCorrectionSource();
+  if (!source) {
+    window.alert("조각이 여러 개 있습니다. 먼저 보정할 조각을 하나 눌러 고른 뒤 다시 눌러 주세요.");
+    return;
+  }
+
+  const resized = resizeRGBA(source.rgba, source.width, source.height, preset.width, preset.height);
+
+  correctionTitle.textContent = `${preset.label} 크기 보정 결과 — ${source.name}`;
+  correctionSize.textContent = `${source.width} × ${source.height} px → ${resized.width} × ${resized.height} px`;
+  correctionPreview.replaceChildren(resized.canvas);
+  correctionResult.hidden = false;
+  correctionResult.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+  correctionSaveButton.onclick = () =>
+    withBusy(correctionSaveButton, "생성 중...", async () => {
+      const png = await encodePNG(resized.rgba, resized.width, resized.height);
+      saveBlob(pngBlob(png), `${safeFileName(source.name)}_${resized.width}x${resized.height}.png`);
+    });
+}
+
+fixSupportButton.addEventListener("click", () => applyCorrection("supportCard"));
+fixHonorButton.addEventListener("click", () => applyCorrection("honor"));
 
 // ---------- 저장 ----------
 
