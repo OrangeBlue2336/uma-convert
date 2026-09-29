@@ -1,0 +1,14 @@
+{
+  "lyrics": {
+    "title": "라이브 가사 변환기 - UmaConvert",
+    "crumb": "라이브 가사",
+    "heading": "라이브 가사 변환기",
+    "lede": "추출한 라이브 가사 파일을 시간표가 있는 읽기 쉬운 TXT로 바꿉니다.",
+    "drop": "가사 파일을 여기에 끌어다 놓으세요",
+    "hint": "m1029_lyrics처럼 확장자가 없는 추출 가사 파일을 사용합니다.",
+    "save": "TXT 저장",
+    "preview": "변환된 가사 미리보기",
+    "reading": "{name} 읽는 중...",
+    "resultInfo": "가사 {count}줄 · {name}에서 읽음"
+  }
+}

@@ -7,6 +7,9 @@ import { createZip } from "../encode/zip.js";
 import { saveBlob, safeFileName } from "../ui/download.js";
 import { createTabs } from "../ui/tabs.js";
 import { wireCopyButton } from "../ui/clipboard.js";
+import { initI18n, t } from "../i18n/index.js";
+
+await initI18n();
 
 const $ = (id) => document.getElementById(id);
 const dropzone = $("dropzone");
@@ -31,9 +34,9 @@ function setStatus(message, isError = false) {
 }
 
 function describeError(error) {
-  if (error instanceof ConvertError) return error.message;
+  if (error instanceof ConvertError) return error.key ? t(error.key, error.values, error.message) : error.message;
   console.error(error);
-  return `변환 중 문제가 생겼습니다: ${error.message}`;
+  return t("common.convertError", { message: error.message });
 }
 
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve)));
@@ -48,7 +51,7 @@ function el(tag, className, text) {
 // ---------- 파일 열기 ----------
 
 async function openFile(file, extraNote = "") {
-  setStatus(`${file.name} 여는 중...`);
+  setStatus(t("usm.opening", { name: file.name }, `${file.name} 여는 중...`));
   await nextFrame();
   try {
     const bytes = new Uint8Array(await file.arrayBuffer());
@@ -70,9 +73,9 @@ function render() {
   const multiVideo = result.videoTracks.length > 1;
 
   resultTitle.textContent = result.sourceName;
-  const parts = [`영상 ${result.videoTracks.length}개`, `오디오 ${result.audioTracks.length}개`];
-  if (result.hasAlpha) parts.push("알파 스트림 있음(제외됨)");
-  resultInfo.textContent = `${parts.join(" · ")} · ${current.fileName}에서 읽음`;
+  const parts = [t("usm.videoCount", { count: result.videoTracks.length }, `영상 ${result.videoTracks.length}개`), t("usm.audioCount", { count: result.audioTracks.length }, `오디오 ${result.audioTracks.length}개`)];
+  if (result.hasAlpha) parts.push(t("usm.alphaExcluded", {}, "알파 스트림 있음(제외됨)"));
+  resultInfo.textContent = t("usm.resultInfo", { parts: parts.join(" · "), name: current.fileName }, `${parts.join(" · ")} · ${current.fileName}에서 읽음`);
 
   renderKeyNote();
   renderSummary(result, multiVideo);
@@ -85,14 +88,14 @@ function renderKeyNote() {
   const hasAdx = result.audioTracks.some((t) => t.format.ext === "adx");
   if (result.keyApplied) {
     keyNote.textContent = hasAdx
-      ? "알려진 키로 영상과 ADX 오디오를 복호화했습니다."
-      : "알려진 키로 영상을 복호화했습니다.";
-    keyToggleButton.textContent = "키 없이 다시 변환";
+      ? t("usm.keyAppliedAdx", {}, "알려진 키로 영상과 ADX 오디오를 복호화했습니다.")
+      : t("usm.keyApplied", {}, "알려진 키로 영상을 복호화했습니다.");
+    keyToggleButton.textContent = t("usm.retryWithoutKey", {}, "키 없이 다시 변환");
     keyToggleButton.hidden = false;
   } else {
     keyNote.textContent = hasAdx
-      ? "키를 적용하지 않고 원본 바이트를 그대로 꺼냈습니다. 영상이나 ADX 오디오가 깨져 보이면 파일을 다시 열어 보세요."
-      : "키를 적용하지 않고 원본 바이트를 그대로 꺼냈습니다. 영상이 깨져 보이면 파일을 다시 열어 보세요.";
+      ? t("usm.keySkippedAdx", {}, "키를 적용하지 않고 원본 바이트를 그대로 꺼냈습니다. 영상이나 ADX 오디오가 깨져 보이면 파일을 다시 열어 보세요.")
+      : t("usm.keySkipped", {}, "키를 적용하지 않고 원본 바이트를 그대로 꺼냈습니다. 영상이 깨져 보이면 파일을 다시 열어 보세요.");
     keyToggleButton.hidden = true;
   }
 }
@@ -104,15 +107,15 @@ function formatVideoInfo(info) {
     const rate = info.framerate_n / (info.framerate_d || 1);
     bits.push(Number.isInteger(rate) ? `${rate}fps` : `${rate.toFixed(3)}fps`);
   }
-  if (info.total_frames) bits.push(`${info.total_frames}프레임`);
+  if (info.total_frames) bits.push(t("usm.frames", { count: info.total_frames }, `${info.total_frames}프레임`));
   return bits.join(", ");
 }
 
 function formatAudioInfo(track) {
-  const bits = [track.format.label ?? "형식 미확인"];
+  const bits = [track.format.label ?? t("usm.unknownFormat", {}, "형식 미확인")];
   const info = track.info;
   if (info?.sampling_rate) bits.push(`${info.sampling_rate}Hz`);
-  if (info?.num_channels) bits.push(`${info.num_channels}채널`);
+  if (info?.num_channels) bits.push(t("usm.channels", { count: info.num_channels }, `${info.num_channels}채널`));
   return bits.join(", ");
 }
 
@@ -138,7 +141,7 @@ function renderSummary(result, multiVideo) {
     ...rows.map((row) => {
       const li = el("li", "usm-summary-row");
       li.append(el("span", "usm-summary-name", row.name));
-      const meta = [`${row.size.toLocaleString()} 바이트`];
+      const meta = [t("usm.bytes", { count: row.size.toLocaleString() }, `${row.size.toLocaleString()} 바이트`)];
       if (row.detail) meta.push(row.detail);
       li.append(el("span", "usm-summary-meta", meta.join(" · ")));
       return li;
@@ -149,7 +152,7 @@ function renderSummary(result, multiVideo) {
 // ---------- 다음 단계 ----------
 
 function renderNextSteps(result) {
-  const steps = buildNextSteps(result);
+  const steps = buildNextSteps(result, (key, values, fallback) => t(key, values, fallback));
   stepList.replaceChildren(
     ...steps.map((step) => {
       const li = el("li", "step-card");
@@ -160,7 +163,7 @@ function renderNextSteps(result) {
         row.append(el("span", "code-label", cmd.label));
         const pre = el("pre");
         pre.append(el("code", null, cmd.text));
-        const copyButton = el("button", "btn small", "복사");
+        const copyButton = el("button", "btn small", t("common.copy"));
         copyButton.type = "button";
         wireCopyButton(copyButton, cmd.text);
         const line = el("div", "code-line");
@@ -193,7 +196,7 @@ zipButton.addEventListener("click", async () => {
   if (!current) return;
   const label = zipButton.textContent;
   zipButton.disabled = true;
-  zipButton.textContent = "묶는 중...";
+  zipButton.textContent = t("common.packing");
   try {
     const { result } = current;
     const multiVideo = result.videoTracks.length > 1;
@@ -204,7 +207,7 @@ zipButton.addEventListener("click", async () => {
     for (const track of result.audioTracks) {
       entries.push({ name: audioFileName(track), data: track.bytes });
     }
-    entries.push({ name: "README.txt", data: new TextEncoder().encode(buildUsmReadme(result)) });
+    entries.push({ name: "README.txt", data: new TextEncoder().encode(buildUsmReadme(result, (key, values, fallback) => t(key, values, fallback))) });
 
     saveBlob(createZip(entries), `${safeFileName(result.sourceName)}.zip`);
 
@@ -235,7 +238,7 @@ window.addEventListener("drop", (event) => {
   event.preventDefault();
   dropzone.classList.remove("is-over");
   const files = event.dataTransfer.files;
-  if (files.length) openFile(files[0], files.length > 1 ? "여러 파일 중 첫 번째 파일만 열었습니다." : "");
+  if (files.length) openFile(files[0], files.length > 1 ? t("common.firstFile") : "");
 });
 
 let dragDepth = 0;

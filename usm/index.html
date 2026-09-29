@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-i18n-scope="usm" data-i18n-title="usm.title">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,38 +23,32 @@
 <body>
   <div class="page">
     <header>
+      <div class="language-switcher" role="group" aria-label="언어 선택" data-i18n-attr="aria-label" data-i18n-aria-label="language.label"><button type="button" data-language="ko" data-i18n="language.ko">한국어</button><button type="button" data-language="en" data-i18n="language.en">English</button></div>
       <nav class="crumbs" aria-label="현재 위치">
         <a href="../">UmaConvert</a>
         <span aria-hidden="true">/</span>
-        <span>.usm 영상 데이터 변환</span>
+        <span data-i18n="usm.crumb">.usm 영상 데이터 변환</span>
       </nav>
-      <h1 class="page-title">.usm 영상 데이터 변환기</h1>
-      <p class="lede">인게임 영상(.usm)을 열어 영상(h264)과 소리(hca)를 그대로 꺼냅니다. 암호화된 파일은 알려진 키로 자동으로 풀어 줍니다.</p>
+      <h1 class="page-title" data-i18n="usm.heading">.usm 영상 데이터 변환기</h1>
+      <p class="lede" data-i18n="usm.lede">인게임 영상(.usm)을 열어 영상(h264)과 소리(hca)를 그대로 꺼냅니다. 암호화된 파일은 알려진 키로 자동으로 풀어 줍니다.</p>
     </header>
 
     <div class="tabs" role="tablist" aria-label="작업 단계">
-      <button class="tab" role="tab" id="tab-open" aria-controls="panel-open" aria-selected="true">파일 열기</button>
-      <button class="tab" role="tab" id="tab-result" aria-controls="panel-result" aria-selected="false" disabled>결과</button>
-      <button class="tab" role="tab" id="tab-next" aria-controls="panel-next" aria-selected="false" disabled>다음 단계</button>
+      <button class="tab" role="tab" id="tab-open" aria-controls="panel-open" aria-selected="true" data-i18n="common.open">파일 열기</button>
+      <button class="tab" role="tab" id="tab-result" aria-controls="panel-result" aria-selected="false" disabled data-i18n="common.result">결과</button>
+      <button class="tab" role="tab" id="tab-next" aria-controls="panel-next" aria-selected="false" disabled data-i18n="usm.next">다음 단계</button>
     </div>
 
     <section class="tab-panel" id="panel-open" role="tabpanel" aria-labelledby="tab-open">
       <label class="dropzone" id="dropzone">
         <input type="file" id="file-input" accept=".usm">
         <i class="mark tl"></i><i class="mark tr"></i><i class="mark bl"></i><i class="mark br"></i>
-        <span class="dropzone-title">.usm 파일을 여기에 끌어다 놓으세요</span>
-        <span class="dropzone-sub">또는 이 영역을 눌러 파일을 고르세요</span>
-        <span class="btn primary" aria-hidden="true">파일 선택</span>
+        <span class="dropzone-title" data-i18n="usm.drop">.usm 파일을 여기에 끌어다 놓으세요</span>
+        <span class="dropzone-sub" data-i18n="common.dropSub">또는 이 영역을 눌러 파일을 고르세요</span>
+        <span class="btn primary" aria-hidden="true" data-i18n="common.selectFile">파일 선택</span>
       </label>
       <p class="status" id="status" role="status" aria-live="polite"></p>
-      <p class="hint">
-        영상은 H.264, 소리는 HCA 그대로 나옵니다. 직접 재생할 수 있는 형태가 아니라, "다음 단계" 탭에서
-        안내하는 대로 vgmstream과 ffmpeg로 합쳐야 재생 가능한 MKV가 됩니다.<br>
-        영상은 항상 알려진 키로 자동 복호화합니다. 결과가 이상하면 결과 화면에서 "키 없이 다시 변환"으로
-        원본 바이트를 그대로 받아볼 수 있습니다. 알파(투명도) 채널 합성은 아직 지원하지
-        않습니다.<br>
-        파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.
-      </p>
+      <p class="hint" data-i18n="usm.hint">영상은 H.264, 소리는 HCA 그대로 나옵니다. 직접 재생할 수 있는 형태가 아니라, "다음 단계" 탭에서 안내하는 대로 vgmstream과 ffmpeg로 합쳐야 재생 가능한 MKV가 됩니다. 영상은 항상 알려진 키로 자동 복호화합니다. 결과가 이상하면 결과 화면에서 "키 없이 다시 변환"으로 원본 바이트를 그대로 받아볼 수 있습니다. 알파(투명도) 채널 합성은 아직 지원하지 않습니다. 파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.</p>
     </section>
 
     <section class="tab-panel" id="panel-result" role="tabpanel" aria-labelledby="tab-result" hidden>
@@ -65,22 +59,16 @@
         </div>
         <div class="result-actions">
           <button class="btn" id="btn-key-toggle" type="button" hidden></button>
-          <button class="btn primary" id="btn-zip" type="button">ZIP으로 저장</button>
+          <button class="btn primary" id="btn-zip" type="button" data-i18n="usm.saveZip">ZIP으로 저장</button>
         </div>
       </div>
       <p class="notice" id="key-note"></p>
       <ul class="usm-summary" id="usm-summary"></ul>
-      <p class="notice" id="alpha-note" hidden>
-        이 USM에는 알파(투명도) 스트림도 있지만, 첫 버전에서는 합성 없이 RGB 영상만 꺼냅니다.
-        (재생 자체는 정상이고, 배경 투명 효과만 빠집니다.)
-      </p>
+      <p class="notice" id="alpha-note" hidden data-i18n="usm.alphaNote">이 USM에는 알파(투명도) 스트림도 있지만, 첫 버전에서는 합성 없이 RGB 영상만 꺼냅니다. (재생 자체는 정상이고, 배경 투명 효과만 빠집니다.)</p>
     </section>
 
     <section class="tab-panel" id="panel-next" role="tabpanel" aria-labelledby="tab-next" hidden>
-      <p class="hint">
-        ZIP 안의 README.txt에도 같은 안내가 들어 있습니다. 아래 명령은 방금 저장한 ZIP의 파일 이름을
-        그대로 기준으로 만들었으니, 압축을 푼 폴더 안에서 실행하면 복사-붙여넣기만으로 됩니다.
-      </p>
+      <p class="hint" data-i18n="usm.nextHint">ZIP 안의 README.txt에도 같은 안내가 들어 있습니다. 아래 명령은 방금 저장한 ZIP의 파일 이름을 그대로 기준으로 만들었으니, 압축을 푼 폴더 안에서 실행하면 복사-붙여넣기만으로 됩니다.</p>
       <ol class="step-list" id="step-list"></ol>
     </section>
   </div>

@@ -1,6 +1,7 @@
 // 오른쪽 조각 목록: 미리보기, 이름, 크기, 개별 저장 버튼, 이름 검색.
 
 const THUMB = 44; // CSS 크기(px). 선명하게 보이도록 canvas는 2배로 그립니다.
+import { t } from "../i18n/index.js";
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -34,7 +35,9 @@ export function createSpriteList({ listEl, countEl, searchEl, onSelect, onSave }
 
   function updateCount() {
     const shown = rows.filter((row) => !row.hidden).length;
-    countEl.textContent = shown === sprites.length ? `${sprites.length}개` : `${shown} / ${sprites.length}개`;
+    countEl.textContent = shown === sprites.length
+      ? t("sprite.count", { count: sprites.length }, `${sprites.length}개`)
+      : t("sprite.countFiltered", { shown, total: sprites.length }, `${shown} / ${sprites.length}개`);
   }
 
   function applyFilter() {
@@ -53,7 +56,7 @@ export function createSpriteList({ listEl, countEl, searchEl, onSelect, onSave }
     listEl.replaceChildren();
 
     if (sprites.length === 0) {
-      listEl.append(el("li", "empty-note", "이 텍스처에는 조각 정보가 없습니다."));
+      listEl.append(el("li", "empty-note", t("sprite.empty", {}, "이 텍스처에는 조각 정보가 없습니다.")));
       rows = [];
       countEl.textContent = "";
       return;
@@ -73,9 +76,9 @@ export function createSpriteList({ listEl, countEl, searchEl, onSelect, onSave }
       select.append(thumb, text);
       select.addEventListener("click", () => onSelect(index));
 
-      const save = el("button", "btn small", "저장");
+      const save = el("button", "btn small", t("common.save"));
       save.type = "button";
-      save.setAttribute("aria-label", `${sprite.name} 저장`);
+      save.setAttribute("aria-label", t("sprite.saveOne", { name: sprite.name }, `${sprite.name} 저장`));
       save.addEventListener("click", () => onSave(index, save));
 
       row.append(select, save);

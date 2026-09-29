@@ -1,0 +1,33 @@
+{
+  "language": {
+    "label": "언어 선택",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "footer": {
+    "notice": "팬이 만든 비공식 도구입니다. 게임 리소스의 저작권은 각 권리자에게 있습니다."
+  },
+  "common": {
+    "open": "파일 열기",
+    "result": "결과",
+    "selectFile": "파일 선택",
+    "dropSub": "또는 이 영역을 눌러 파일을 고르세요",
+    "localOnly": "파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.",
+    "convertError": "변환 중 문제가 생겼습니다: {message}",
+    "firstFile": "여러 파일 중 첫 번째 파일만 열었습니다.",
+    "save": "저장",
+    "creating": "생성 중...",
+    "packing": "묶는 중...",
+    "copy": "복사",
+    "copied": "복사됨",
+    "copyFailed": "복사 실패"
+  },
+  "error": {
+    "bundle": {
+      "notUnityFs": "Unity 번들(UnityFS) 파일이 아닙니다. 파일 머리글: \"{head}\". 암호화되어 있거나 다른 종류의 파일일 수 있습니다."
+    },
+    "usm": {
+      "notCrid": "CRID로 시작하지 않습니다. .usm 파일이 맞는지 확인하세요."
+    }
+  }
+}

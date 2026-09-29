@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-i18n-scope="home" data-i18n-title="home.title">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>UmaConvert</title>
-  <meta name="description" content="UmamusumeExplorer를 이용하여 게임 폴더에서 꺼낸 파일을 브라우저에서 바로 변환하는 도구 모음">
+  <meta name="description" content="UmamusumeExplorer를 이용하여 게임 폴더에서 꺼낸 파일을 브라우저에서 바로 변환하는 도구 모음" data-i18n-attr="content" data-i18n-content="home.description">
   <!-- 파비콘 · 폰트 · base.css: 모든 페이지가 함께 쓰는 조각입니다.
        내용을 바꾸려면 _partials/head-common.html을 고친 뒤 `node build.mjs`를 실행하세요.
        (직접 사용하려면 realfavicongenerator.net에서 받은 코드를 그 파일에 붙여넣으면 됩니다.)
@@ -27,20 +27,21 @@
 <body>
   <div class="page">
     <header>
-      <h1 class="page-title">UmaConvert</h1>
-      <p class="lede">
-        <a href="https://github.com/MarshmallowAndroid/UmamusumeExplorer" target="_blank" rel="noopener noreferrer">UmamusumeExplorer</a>를 이용하여 게임 폴더에서 꺼낸 파일을 브라우저에서 바로 변환합니다.
-        파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.
-      </p>
+      <div class="language-switcher" role="group" aria-label="언어 선택" data-i18n-attr="aria-label" data-i18n-aria-label="language.label">
+        <button type="button" data-language="ko" data-i18n="language.ko">한국어</button>
+        <button type="button" data-language="en" data-i18n="language.en">English</button>
+      </div>
+      <h1 class="page-title" data-i18n="home.title">UmaConvert</h1>
+      <p class="lede"><a href="https://github.com/MarshmallowAndroid/UmamusumeExplorer" target="_blank" rel="noopener noreferrer">UmamusumeExplorer</a><span data-i18n="home.ledeAfter">를 이용하여 게임 폴더에서 꺼낸 파일을 브라우저에서 바로 변환합니다. 파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.</span></p>
     </header>
 
     <main>
       <ul class="tool-list" id="tool-list"></ul>
-      <noscript><p class="lede">이 페이지는 JavaScript가 필요합니다. 브라우저 설정에서 켜 주세요.</p></noscript>
+      <noscript><p class="lede" data-i18n="home.noScript">이 페이지는 JavaScript가 필요합니다. 브라우저 설정에서 켜 주세요.</p></noscript>
     </main>
 
     <footer class="site-foot">
-      팬이 만든 비공식 도구입니다. 게임 리소스의 저작권은 각 권리자에게 있습니다.
+      <span data-i18n="footer.notice">팬이 만든 비공식 도구입니다. 게임 리소스의 저작권은 각 권리자에게 있습니다.</span>
     </footer>
   </div>
 

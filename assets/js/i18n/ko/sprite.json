@@ -1,0 +1,36 @@
+{
+  "sprite": {
+    "title": "스프라이트 변환기 - UmaConvert",
+    "crumb": "스프라이트",
+    "heading": "스프라이트 변환기",
+    "lede": "텍스처 파일을 PNG로 바꾸고, 안에 든 조각을 한 장씩 저장합니다.",
+    "drop": "파일을 여기에 끌어다 놓으세요",
+    "hint": "heroes_tex, note_tex처럼 확장자가 없는 텍스처 파일을 사용합니다.",
+    "savePng": "PNG 저장",
+    "saveZip": "조각 ZIP 저장",
+    "bounds": "조각 경계 표시",
+    "zoom": "보기 크기",
+    "fit": "화면에 맞춤",
+    "search": "조각 이름 검색",
+    "fixSupport": "서포트 카드 크기 보정",
+    "fixHonor": "칭호 크기 보정",
+    "correctionHint": "일부 조각은 비율이 짜부러진 채로 들어 있습니다. 위에서 조각을 눌러 고른 뒤(조각이 없는 텍스처는 그대로) 눌러서 정해진 크기로 강제로 맞춰 보세요.",
+    "saveCorrected": "보정된 이미지 저장",
+    "converting": "{name} 변환 중...",
+    "resultInfo": "{width} × {height} px, {format}, 조각 {count}개",
+    "saveZipCount": "조각 {count}개 ZIP 저장",
+    "selectionHint": "조각을 누르면 이름과 크기가 여기에 나옵니다.",
+    "selectionInfo": " {width} × {height} px, 위치 ({x}, {y})",
+    "pickCorrection": "조각이 여러 개 있습니다. 먼저 보정할 조각을 하나 눌러 고른 뒤 다시 눌러 주세요.",
+    "correctionResult": "{label} 크기 보정 결과 — {name}",
+    "preset": {
+      "supportCard": "서포트 카드",
+      "honor": "칭호"
+    },
+    "packingProgress": "묶는 중 {current} / {total}",
+    "count": "{count}개",
+    "countFiltered": "{shown} / {total}개",
+    "empty": "이 텍스처에는 조각 정보가 없습니다.",
+    "saveOne": "{name} 저장"
+  }
+}

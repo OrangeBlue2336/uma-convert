@@ -1,0 +1,14 @@
+{
+  "lyrics": {
+    "title": "Live Lyrics Converter - UmaConvert",
+    "crumb": "Live Lyrics",
+    "heading": "Live Lyrics Converter",
+    "lede": "Convert extracted Winning Live lyric files to readable TXT with timestamps.",
+    "drop": "Drop a lyric file here",
+    "hint": "Use extracted lyric files without an extension, such as m1029_lyrics.",
+    "save": "Save TXT",
+    "preview": "Converted lyric preview",
+    "reading": "Reading {name}...",
+    "resultInfo": "{count} lyric lines · read from {name}"
+  }
+}

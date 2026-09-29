@@ -147,7 +147,10 @@ function walkChunks(bytes) {
     pos += totalLen;
   }
   if (chunks.length === 0 || chunks[0].sig !== "CRID") {
-    throw new ConvertError("CRID로 시작하지 않습니다. .usm 파일이 맞는지 확인하세요.");
+    throw new ConvertError(
+      "CRID로 시작하지 않습니다. .usm 파일이 맞는지 확인하세요.",
+      "error.usm.notCrid",
+    );
   }
   return chunks;
 }
@@ -438,15 +441,18 @@ function wavFileName(track) {
  * @param {ReturnType<typeof convertUsm>} result
  * @returns {{ title: string, body?: string, commands?: { label: string, text: string }[] }[]}
  */
-export function buildNextSteps(result) {
+export function buildNextSteps(result, translate) {
+  // 코어는 DOM을 알지 못하게 두되, 화면은 같은 구조에 언어별 문구를 주입할 수 있게 합니다.
+  // 두 번째 인자가 없으면 CLI와 기존 호출은 한국어 기본 문구를 그대로 사용합니다.
+  const tr = (key, values, fallback) => translate ? translate(key, values, fallback) : fallback;
   const multiVideo = result.videoTracks.length > 1;
   const rate = formatFrameRate(result.videoTracks[0]?.info) ?? 30;
   const steps = [];
 
   steps.push({
-    title: "1. ffmpeg가 있는지 확인하기",
-    body: "이미 설치되어 있다면 이 단계는 건너뛰세요. 없다면 ffmpeg.org에서 받거나(Windows는 winget, Mac은 brew로도 설치할 수 있습니다) 아래 명령으로 확인하세요.",
-    commands: [{ label: "설치 확인", text: "ffmpeg -version" }],
+    title: tr("usm.steps.ffmpeg.title", {}, "1. ffmpeg가 있는지 확인하기"),
+    body: tr("usm.steps.ffmpeg.body", {}, "이미 설치되어 있다면 이 단계는 건너뛰세요. 없다면 ffmpeg.org에서 받거나(Windows는 winget, Mac은 brew로도 설치할 수 있습니다) 아래 명령으로 확인하세요."),
+    commands: [{ label: tr("usm.steps.ffmpeg.label", {}, "설치 확인"), text: "ffmpeg -version" }],
   });
 
   const unknownAudio = result.audioTracks.filter((t) => t.format?.ext === "bin");
@@ -455,11 +461,8 @@ export function buildNextSteps(result) {
   if (knownAudio.length > 0) {
     const formats = [...new Set(knownAudio.map((t) => t.format.label))].join("/");
     steps.push({
-      title: `2. ${formats}를 WAV로 바꾸기`,
-      body:
-        "설치 없이 하려면 vgmstream-web(https://katiefrogs.github.io/vgmstream-web/)에 audio_* 파일을 끌어다 놓아 WAV로 받으세요. " +
-        "명령줄을 쓰고 싶다면 vgmstream-cli(https://github.com/vgmstream/vgmstream)를 설치한 뒤 아래를 실행하세요. vgmstream은 ADX/HCA " +
-        "모두 지원하니 확장자만 맞으면 명령 형태는 같습니다.",
+      title: tr("usm.steps.audio.title", { formats }, `2. ${formats}를 WAV로 바꾸기`),
+      body: tr("usm.steps.audio.body", {}, "설치 없이 하려면 vgmstream-web(https://katiefrogs.github.io/vgmstream-web/)에 audio_* 파일을 끌어다 놓아 WAV로 받으세요. 명령줄을 쓰고 싶다면 vgmstream-cli(https://github.com/vgmstream/vgmstream)를 설치한 뒤 아래를 실행하세요. vgmstream은 ADX/HCA 모두 지원하니 확장자만 맞으면 명령 형태는 같습니다."),
       commands: knownAudio.map((t) => ({
         label: `${audioFileName(t)} -> ${wavFileName(t)}`,
         text: `vgmstream-cli -o ${wavFileName(t)} ${audioFileName(t)}`,
@@ -468,10 +471,8 @@ export function buildNextSteps(result) {
   }
   if (unknownAudio.length > 0) {
     steps.push({
-      title: `${knownAudio.length > 0 ? "2-1" : "2"}. 형식을 알 수 없는 오디오 (${unknownAudio.map(audioFileName).join(", ")})`,
-      body:
-        "표준 ADX/HCA 헤더 시그니처와 일치하지 않아 자동으로 인식하지 못했습니다. .bin 그대로 vgmstream이나 " +
-        "VGMToolbox의 스트림 도구에 넣어 형식을 확인해 보세요. (재생 가능한 형식이 아닐 수도 있습니다.)",
+      title: tr("usm.steps.unknown.title", { number: knownAudio.length > 0 ? "2-1" : "2", files: unknownAudio.map(audioFileName).join(", ") }, `${knownAudio.length > 0 ? "2-1" : "2"}. 형식을 알 수 없는 오디오 (${unknownAudio.map(audioFileName).join(", ")})`),
+      body: tr("usm.steps.unknown.body", {}, "표준 ADX/HCA 헤더 시그니처와 일치하지 않아 자동으로 인식하지 못했습니다. .bin 그대로 vgmstream이나 VGMToolbox의 스트림 도구에 넣어 형식을 확인해 보세요. (재생 가능한 형식이 아닐 수도 있습니다.)"),
     });
   }
 
@@ -480,20 +481,20 @@ export function buildNextSteps(result) {
 
   if (knownAudio.length === 0) {
     steps.push({
-      title: `${stepNum}. 영상만 재생 가능한 파일로 바꾸기`,
+      title: tr("usm.steps.videoOnly.title", { number: stepNum }, `${stepNum}. 영상만 재생 가능한 파일로 바꾸기`),
       body:
         result.audioTracks.length === 0
-          ? "이 USM에는 오디오가 없어 영상만 그대로 담으면 됩니다."
-          : "오디오 형식을 알아내지 못해 우선 영상만 담습니다. 위에서 오디오 형식을 확인한 뒤 필요하면 이 MKV에 나중에 소리를 더할 수 있습니다.",
-      commands: [{ label: "MKV로 담기", text: `ffmpeg -framerate ${rate} -i ${videoName} -c:v copy output.mkv` }],
+          ? tr("usm.steps.videoOnly.noAudio", {}, "이 USM에는 오디오가 없어 영상만 그대로 담으면 됩니다.")
+          : tr("usm.steps.videoOnly.unknownAudio", {}, "오디오 형식을 알아내지 못해 우선 영상만 담습니다. 위에서 오디오 형식을 확인한 뒤 필요하면 이 MKV에 나중에 소리를 더할 수 있습니다."),
+      commands: [{ label: tr("usm.steps.videoOnly.label", {}, "MKV로 담기"), text: `ffmpeg -framerate ${rate} -i ${videoName} -c:v copy output.mkv` }],
     });
   } else if (knownAudio.length === 1) {
     const wav = wavFileName(knownAudio[0]);
     steps.push({
-      title: `${stepNum}. 영상 + 소리를 하나의 MKV로 합치기`,
+      title: tr("usm.steps.oneAudio.title", { number: stepNum }, `${stepNum}. 영상 + 소리를 하나의 MKV로 합치기`),
       commands: [
         {
-          label: "합치기",
+          label: tr("usm.steps.oneAudio.label", {}, "합치기"),
           text: `ffmpeg -framerate ${rate} -i ${videoName} -i ${wav} -map 0:v:0 -map 1:a:0 -c:v copy -c:a flac output.mkv`,
         },
       ],
@@ -504,15 +505,15 @@ export function buildNextSteps(result) {
     const maps = knownAudio.map((_, i) => `-map ${i + 1}:a:0`).join(" ");
     const mixInputs = knownAudio.map((_, i) => `[${i + 1}:a]`).join("");
     steps.push({
-      title: `${stepNum}. 영상 + 소리 ${knownAudio.length}개를 하나의 MKV로 합치기`,
-      body: `오디오 트랙(${wavs.join(", ")})을 서로 다른 트랙으로 그대로 두는 방법과, 하나로 믹스해 담는 방법 중 골라 쓰세요.`,
+      title: tr("usm.steps.multiAudio.title", { number: stepNum, count: knownAudio.length }, `${stepNum}. 영상 + 소리 ${knownAudio.length}개를 하나의 MKV로 합치기`),
+      body: tr("usm.steps.multiAudio.body", { wavs: wavs.join(", ") }, `오디오 트랙(${wavs.join(", ")})을 서로 다른 트랙으로 그대로 두는 방법과, 하나로 믹스해 담는 방법 중 골라 쓰세요.`),
       commands: [
         {
-          label: "트랙을 따로 유지 (플레이어에서 오디오 트랙 선택 가능)",
+          label: tr("usm.steps.multiAudio.separate", {}, "트랙을 따로 유지 (플레이어에서 오디오 트랙 선택 가능)"),
           text: `ffmpeg -framerate ${rate} -i ${videoName} ${inputs} -map 0:v:0 ${maps} -c:v copy -c:a flac output.mkv`,
         },
         {
-          label: "하나로 믹스해서 담기",
+          label: tr("usm.steps.multiAudio.mix", {}, "하나로 믹스해서 담기"),
           text: `ffmpeg -framerate ${rate} -i ${videoName} ${inputs} -filter_complex "${mixInputs}amix=inputs=${knownAudio.length}:duration=longest[a]" -map 0:v:0 -map "[a]" -c:v copy -c:a flac output.mkv`,
         },
       ],
@@ -520,8 +521,8 @@ export function buildNextSteps(result) {
   }
 
   steps.push({
-    title: `${stepNum + 1}. 결과 확인하기`,
-    body: "output.mkv를 VLC나 mpv로 열어 영상·소리·길이가 맞는지 확인하세요. 재생이 이상하면 관용도가 높은 플레이어(VLC/mpv)로 먼저 확인해 보고, 그래도 안 되면 위 -framerate 값을 바꿔 다시 시도해 보세요.",
+    title: tr("usm.steps.check.title", { number: stepNum + 1 }, `${stepNum + 1}. 결과 확인하기`),
+    body: tr("usm.steps.check.body", {}, "output.mkv를 VLC나 mpv로 열어 영상·소리·길이가 맞는지 확인하세요. 재생이 이상하면 관용도가 높은 플레이어(VLC/mpv)로 먼저 확인해 보고, 그래도 안 되면 위 -framerate 값을 바꿔 다시 시도해 보세요."),
   });
 
   return steps;
@@ -531,40 +532,41 @@ export function buildNextSteps(result) {
  * 결과 ZIP에 함께 넣을 안내문(README.txt)을 만듭니다. buildNextSteps와 같은 정보를 평문으로 펼칩니다.
  * @param {ReturnType<typeof convertUsm>} result
  */
-export function buildUsmReadme(result) {
+export function buildUsmReadme(result, translate) {
+  const tr = (key, values, fallback) => translate ? translate(key, values, fallback) : fallback;
   const lines = [];
-  lines.push(`UmaConvert - .usm 영상 데이터 변환 결과`);
-  lines.push(`원본: ${result.sourceName}`);
+  lines.push(tr("usm.readme.title", {}, "UmaConvert - .usm 영상 데이터 변환 결과"));
+  lines.push(tr("usm.readme.source", { name: result.sourceName }, `원본: ${result.sourceName}`));
   lines.push("");
 
   const hasAdx = result.audioTracks.some((t) => t.format.ext === "adx");
   const hasHca = result.audioTracks.some((t) => t.format.ext === "hca");
   if (result.keyApplied) {
     const audioNote = hasAdx && hasHca
-      ? " (ADX 오디오도 함께 복호화했고, HCA 오디오는 키와 무관하게 원래부터 정상 재생됩니다.)"
+      ? tr("usm.readme.audioNote.adxHca", {}, " (ADX 오디오도 함께 복호화했고, HCA 오디오는 키와 무관하게 원래부터 정상 재생됩니다.)")
       : hasAdx
-        ? " (ADX 오디오도 함께 복호화했습니다.)"
+        ? tr("usm.readme.audioNote.adx", {}, " (ADX 오디오도 함께 복호화했습니다.)")
         : hasHca
-          ? " (오디오는 HCA라 키와 무관하게 원래부터 정상 재생됩니다.)"
+          ? tr("usm.readme.audioNote.hca", {}, " (오디오는 HCA라 키와 무관하게 원래부터 정상 재생됩니다.)")
           : "";
-    lines.push(`알려진 키로 영상을 복호화했습니다.${audioNote}`);
-    lines.push(`영상이나 ADX 오디오가 깨져 보이면 UmaConvert 화면에서 "키 없이 다시 변환"을 눌러 보세요.`);
+    lines.push(tr("usm.readme.keyApplied", { audioNote }, `알려진 키로 영상을 복호화했습니다.${audioNote}`));
+    lines.push(tr("usm.readme.retry", {}, `영상이나 ADX 오디오가 깨져 보이면 UmaConvert 화면에서 "키 없이 다시 변환"을 눌러 보세요.`));
   } else {
-    lines.push(`요청에 따라 키를 적용하지 않고 원본 바이트를 그대로 꺼냈습니다.`);
-    lines.push(`영상이나 ADX 오디오가 깨져 보이면 UmaConvert 화면에서 파일을 다시 열어 보세요 (다시 열면 키가 적용됩니다).`);
+    lines.push(tr("usm.readme.keySkipped", {}, "요청에 따라 키를 적용하지 않고 원본 바이트를 그대로 꺼냈습니다."));
+    lines.push(tr("usm.readme.reopen", {}, "영상이나 ADX 오디오가 깨져 보이면 UmaConvert 화면에서 파일을 다시 열어 보세요 (다시 열면 키가 적용됩니다)."));
   }
   lines.push("");
 
   const multiVideo = result.videoTracks.length > 1;
   for (const track of result.videoTracks) {
     const info = track.info;
-    lines.push(`${videoFileName(track, multiVideo)}  (${track.bytes.length.toLocaleString()} 바이트)`);
+    lines.push(`${videoFileName(track, multiVideo)}  (${tr("usm.readme.bytes", { count: track.bytes.length.toLocaleString() }, `${track.bytes.length.toLocaleString()} 바이트`)})`);
     if (info) {
       const rate = formatFrameRate(info);
       lines.push(
-        `  해상도 ${info.width}x${info.height}` +
+        `  ${tr("usm.readme.resolution", { width: info.width, height: info.height }, `해상도 ${info.width}x${info.height}`)}` +
           (rate ? `, ${rate}fps` : "") +
-          (info.total_frames ? `, 총 ${info.total_frames}프레임` : ""),
+          (info.total_frames ? `, ${tr("usm.readme.frames", { count: info.total_frames }, `총 ${info.total_frames}프레임`)}` : ""),
       );
     }
   }
@@ -572,28 +574,28 @@ export function buildUsmReadme(result) {
 
   for (const track of result.audioTracks) {
     const info = track.info;
-    lines.push(`${audioFileName(track)}  (${track.bytes.length.toLocaleString()} 바이트, ${track.format.label ?? "형식 미확인"})`);
+    lines.push(`${audioFileName(track)}  (${tr("usm.readme.bytes", { count: track.bytes.length.toLocaleString() }, `${track.bytes.length.toLocaleString()} 바이트`)}, ${track.format.label ?? tr("usm.unknownFormat", {}, "형식 미확인")})`);
     if (info) {
       lines.push(
         `  ` +
           (info.sampling_rate ? `${info.sampling_rate}Hz, ` : "") +
-          (info.num_channels ? `${info.num_channels}채널` : ""),
+          (info.num_channels ? tr("usm.readme.channels", { count: info.num_channels }, `${info.num_channels}채널`) : ""),
       );
     }
   }
   if (result.audioTracks.length === 0) {
-    lines.push(`(이 USM에는 오디오 스트림이 없습니다.)`);
+    lines.push(tr("usm.readme.noAudio", {}, "(이 USM에는 오디오 스트림이 없습니다.)"));
   }
   lines.push("");
 
   if (result.hasAlpha) {
-    lines.push(`이 USM에는 알파(투명도) 스트림도 있지만, 첫 버전 범위에서 제외해 꺼내지 않았습니다.`);
-    lines.push(`(합성 없이 RGB 영상만 재생해도 화면상 이상은 없고, 배경 투명 효과만 빠집니다.)`);
+    lines.push(tr("usm.readme.alpha", {}, "이 USM에는 알파(투명도) 스트림도 있지만, 첫 버전 범위에서 제외해 꺼내지 않았습니다."));
+    lines.push(tr("usm.readme.alphaDetail", {}, "(합성 없이 RGB 영상만 재생해도 화면상 이상은 없고, 배경 투명 효과만 빠집니다.)"));
     lines.push("");
   }
 
-  lines.push(`--- 재생 가능한 파일로 합치는 방법 ---`);
-  for (const step of buildNextSteps(result)) {
+  lines.push(tr("usm.readme.steps", {}, "--- 재생 가능한 파일로 합치는 방법 ---"));
+  for (const step of buildNextSteps(result, translate)) {
     lines.push("");
     lines.push(step.title);
     if (step.body) lines.push(step.body);
@@ -603,7 +605,7 @@ export function buildUsmReadme(result) {
     }
   }
   lines.push("");
-  lines.push(`팬이 만든 비공식 도구입니다.`);
+  lines.push(tr("usm.readme.footer", {}, "팬이 만든 비공식 도구입니다."));
 
   return lines.join("\n");
 }

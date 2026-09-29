@@ -4,6 +4,9 @@ import { convertLyricsBundle, lyricsToText } from "../core/lyrics.js";
 import { ConvertError } from "../core/errors.js";
 import { saveBlob, safeFileName } from "../ui/download.js";
 import { createTabs } from "../ui/tabs.js";
+import { initI18n, t } from "../i18n/index.js";
+
+await initI18n();
 
 const $ = (id) => document.getElementById(id);
 const dropzone = $("dropzone");
@@ -23,21 +26,21 @@ function setStatus(message, isError = false) {
 }
 
 function describeError(error) {
-  if (error instanceof ConvertError) return error.message;
+  if (error instanceof ConvertError) return error.key ? t(error.key, error.values, error.message) : error.message;
   console.error(error);
-  return `변환 중 문제가 생겼습니다: ${error.message}`;
+  return t("common.convertError", { message: error.message });
 }
 
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve)));
 
 async function openFile(file, extraNote = "") {
-  setStatus(`${file.name} 읽는 중...`);
+  setStatus(t("lyrics.reading", { name: file.name }, `${file.name} 읽는 중...`));
   await nextFrame();
   try {
     const converted = convertLyricsBundle(new Uint8Array(await file.arrayBuffer()));
     current = { ...converted, text: lyricsToText(converted.rows) };
     resultTitle.textContent = converted.name;
-    resultInfo.textContent = `가사 ${converted.rows.length}줄 · ${file.name}에서 읽음`;
+    resultInfo.textContent = t("lyrics.resultInfo", { count: converted.rows.length, name: file.name }, `가사 ${converted.rows.length}줄 · ${file.name}에서 읽음`);
     preview.textContent = current.text;
     tabs.setEnabled("tab-result", true);
     tabs.show("tab-result");
@@ -69,7 +72,7 @@ window.addEventListener("drop", (event) => {
   event.preventDefault();
   dropzone.classList.remove("is-over");
   const files = event.dataTransfer.files;
-  if (files.length) openFile(files[0], files.length > 1 ? "여러 파일 중 첫 번째 파일만 열었습니다." : "");
+  if (files.length) openFile(files[0], files.length > 1 ? t("common.firstFile") : "");
 });
 
 let dragDepth = 0;

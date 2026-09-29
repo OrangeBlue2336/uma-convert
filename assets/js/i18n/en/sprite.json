@@ -1,0 +1,36 @@
+{
+  "sprite": {
+    "title": "Sprite Converter - UmaConvert",
+    "crumb": "Sprites",
+    "heading": "Sprite Converter",
+    "lede": "Convert texture files to PNG and save each contained sprite separately.",
+    "drop": "Drop a file here",
+    "hint": "Use texture files without an extension, such as heroes_tex or note_tex.",
+    "savePng": "Save PNG",
+    "saveZip": "Save sprite ZIP",
+    "bounds": "Show sprite bounds",
+    "zoom": "View size",
+    "fit": "Fit to screen",
+    "search": "Search sprite names",
+    "fixSupport": "Resize support card",
+    "fixHonor": "Resize title",
+    "correctionHint": "Some sprites are not sized correctly. Select one above (or use a texture without sprites), then resize it to its intended fixed dimensions.",
+    "saveCorrected": "Save resized image",
+    "converting": "Converting {name}...",
+    "resultInfo": "{width} × {height} px, {format}, {count} sprites",
+    "saveZipCount": "Save ZIP of {count} sprites",
+    "selectionHint": "Click a sprite to see its name and dimensions here.",
+    "selectionInfo": " {width} × {height} px, position ({x}, {y})",
+    "pickCorrection": "This texture has multiple sprites. Select the one to resize first, then try again.",
+    "correctionResult": "Resized {label} — {name}",
+    "preset": {
+      "supportCard": "support card",
+      "honor": "title"
+    },
+    "packingProgress": "Packing {current} / {total}",
+    "count": "{count}",
+    "countFiltered": "{shown} / {total}",
+    "empty": "This texture has no sprite information.",
+    "saveOne": "Save {name}"
+  }
+}

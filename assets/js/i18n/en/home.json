@@ -1,0 +1,32 @@
+{
+  "home": {
+    "title": "UmaConvert",
+    "description": "Web tools for converting files extracted from Umamusume with UmamusumeExplorer.",
+    "lede": "Convert files extracted from Umamusume with UmamusumeExplorer directly in your browser. Files stay on your device and are never uploaded.",
+    "ledeAfter": " lets you convert files extracted from the game directly in your browser. Files stay on your device and are never uploaded.",
+    "noScript": "This page requires JavaScript. Please enable it in your browser settings."
+  },
+  "tool": {
+    "sprite": {
+      "title": "Sprites",
+      "desc": "Convert texture files to PNG and save each contained sprite separately.",
+      "input": "_tex files found in Root/atlas/",
+      "output": "One PNG and a ZIP of individual sprite PNGs"
+    },
+    "lyrics": {
+      "title": "Live Lyrics",
+      "desc": "Convert Winning Live lyric data into readable text.",
+      "input": "_lyrics files found in Root/live/musicscores/",
+      "output": "A timestamped TXT file"
+    },
+    "usm": {
+      "title": ".usm Video Data",
+      "desc": "Split encrypted in-game video data into h264 and hca/adx files for conversion with ffmpeg.",
+      "input": ".usm files",
+      "output": "A ZIP containing h264 and hca/adx files"
+    },
+    "soon": "WIP",
+    "input": "Input",
+    "output": "Output"
+  }
+}

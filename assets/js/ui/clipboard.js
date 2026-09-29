@@ -1,4 +1,5 @@
 // 명령줄 복사 버튼 같은 곳에서 쓰는 클립보드 복사 도우미.
+import { t } from "../i18n/index.js";
 
 /**
  * 텍스트를 클립보드에 복사합니다. HTTPS/localhost가 아니면 navigator.clipboard가 없을 수 있어
@@ -33,7 +34,7 @@ export function wireCopyButton(button, text) {
   button.addEventListener("click", async () => {
     const ok = await copyText(text);
     const original = button.textContent;
-    button.textContent = ok ? "복사됨" : "복사 실패";
+    button.textContent = ok ? t("common.copied") : t("common.copyFailed");
     button.disabled = true;
     setTimeout(() => {
       button.textContent = original;

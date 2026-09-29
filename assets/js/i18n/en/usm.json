@@ -1,0 +1,81 @@
+{
+  "usm": {
+    "title": ".usm Video Data Converter - UmaConvert",
+    "crumb": ".usm Video Data",
+    "heading": ".usm Video Data Converter",
+    "lede": "Open in-game .usm file and extract its h264 video and hca audio unchanged. Encrypted files are automatically decrypted with the known key.",
+    "next": "Next steps",
+    "drop": "Drop a .usm file here",
+    "saveZip": "Save ZIP",
+    "hint": "Video is extracted as H.264 and audio as HCA/ADX unchanged. They cannot be played directly; use vgmstream and ffmpeg as described in the Next steps tab to create a playable MKV. Video is always decrypted with the known key. If the result looks wrong, use Convert again without key on the results page to extract the original bytes. Alpha-channel compositing is not supported yet. Files stay on your device and are never uploaded.",
+    "alphaNote": "This USM also has an alpha (transparency) stream, but it will only extract RGB video without compositing it. Playback still works, only background transparency effects are missing.",
+    "nextHint": "The ZIP also contains these instructions in README.txt. The commands below use the filenames from the ZIP you just saved, so run them inside the extracted folder.",
+    "opening": "Opening {name}...",
+    "videoCount": "{count} video tracks",
+    "audioCount": "{count} audio tracks",
+    "alphaExcluded": "Alpha stream present (excluded)",
+    "resultInfo": "{parts} · read from {name}",
+    "keyAppliedAdx": "Decrypted video and ADX audio with the known key.",
+    "keyApplied": "Decrypted video with the known key.",
+    "retryWithoutKey": "Convert again without key",
+    "keySkippedAdx": "Extracted the original bytes without applying the key. Reopen the file if the video or ADX audio looks corrupted.",
+    "keySkipped": "Extracted the original bytes without applying the key. Reopen the file if the video looks corrupted.",
+    "frames": "{count} frames",
+    "unknownFormat": "Unknown format",
+    "channels": "{count} channels",
+    "bytes": "{count} bytes",
+    "steps": {
+      "ffmpeg": {
+        "title": "1. Check for ffmpeg",
+        "body": "Skip this step if ffmpeg is already installed. If not, get it from ffmpeg.org (or use winget on Windows or brew on macOS), then run the command below to check the installation.",
+        "label": "Check installation"
+      },
+      "audio": {
+        "title": "2. Convert {formats} to WAV",
+        "body": "For non-installed usage, drop audio_* files onto vgmstream-web (https://katiefrogs.github.io/vgmstream-web/) to download WAV files. To use CLI, install vgmstream-cli (https://github.com/vgmstream/vgmstream) and run the commands below. vgmstream supports both ADX and HCA, so the command form is the same for either extension."
+      },
+      "unknown": {
+        "title": "{number}. Audio with an unknown format ({files})",
+        "body": "The file did not match a standard ADX or HCA header signature, so its format could not be detected automatically. Try the .bin file in vgmstream or VGMToolbox stream tools to identify it. It may not be playable."
+      },
+      "videoOnly": {
+        "title": "{number}. Make a playable video-only file",
+        "noAudio": "This USM has no audio, so you only need to put the video into a container.",
+        "unknownAudio": "The audio format could not be identified, so create a video-only MKV first. After identifying the audio above, you can add it to this MKV later if needed.",
+        "label": "Create MKV"
+      },
+      "oneAudio": {
+        "title": "{number}. Combine video and audio into one MKV",
+        "label": "Combine"
+      },
+      "multiAudio": {
+        "title": "{number}. Combine video and {count} audio tracks into one MKV",
+        "body": "Choose whether to keep the audio tracks ({wavs}) separate or mix them into one track.",
+        "separate": "Keep tracks separate (choose an audio track in the player)",
+        "mix": "Mix into one track"
+      },
+      "check": {
+        "title": "{number}. Check the result",
+        "body": "Open output.mkv in VLC or mpv and check the video, audio, and duration. If playback is unusual, try a different player such as VLC or mpv first. If it persists, change the -framerate value above and try again."
+      }
+    },
+    "readme": {
+      "title": "UmaConvert - .usm video data conversion result",
+      "source": "Source: {name}",
+      "keyApplied": "Decrypted video with the known key.{audioNote}",
+      "audioNote": { "adxHca": " (ADX audio was also decrypted; HCA audio plays normally without this key.)", "adx": " (ADX audio was also decrypted.)", "hca": " (HCA audio plays normally without this key.)" },
+      "retry": "If the video or ADX audio appears corrupted, select \"Convert again without key\" in UmaConvert.",
+      "keySkipped": "Extracted the original bytes without applying the key as requested.",
+      "reopen": "If the video or ADX audio appears corrupted, reopen the file in UmaConvert (the key is applied when reopening).",
+      "bytes": "{count} bytes",
+      "resolution": "Resolution {width}x{height}",
+      "frames": "{count} frames total",
+      "channels": "{count} channels",
+      "noAudio": "(This USM has no audio stream.)",
+      "alpha": "This USM contains an alpha (transparency) stream, but extraction is not supported as of now.",
+      "alphaDetail": "(RGB video plays normally without compositing; only background transparency effects are absent.)",
+      "steps": "--- Creating a playable file ---",
+      "footer": "Unofficial fan-made tool."
+    }
+  }
+}

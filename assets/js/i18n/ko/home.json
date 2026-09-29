@@ -1,0 +1,32 @@
+{
+  "home": {
+    "title": "UmaConvert",
+    "description": "UmamusumeExplorer를 이용하여 게임 폴더에서 꺼낸 파일을 브라우저에서 바로 변환하는 도구 모음",
+    "lede": "UmamusumeExplorer를 이용하여 게임 폴더에서 꺼낸 파일을 브라우저에서 바로 변환합니다. 파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.",
+    "ledeAfter": "를 이용하여 게임 폴더에서 꺼낸 파일을 브라우저에서 바로 변환합니다. 파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.",
+    "noScript": "이 페이지는 JavaScript가 필요합니다. 브라우저 설정에서 켜 주세요."
+  },
+  "tool": {
+    "sprite": {
+      "title": "스프라이트",
+      "desc": "텍스처 파일을 PNG로 바꾸고, 안에 든 조각을 한 장씩 저장합니다.",
+      "input": "Root/atlas/ 에서 발견되는 _tex 파일",
+      "output": "PNG 한 장, 조각별 PNG를 묶은 ZIP"
+    },
+    "lyrics": {
+      "title": "라이브 가사",
+      "desc": "라이브 곡의 가사 데이터를 읽을 수 있는 텍스트로 바꿉니다.",
+      "input": "Root/live/musicscores/ 에서 발견되는 _lyrics 파일",
+      "output": "시간표가 있는 TXT 파일"
+    },
+    "usm": {
+      "title": ".usm 영상 데이터 변환",
+      "desc": "암호화 된 인게임 영상 데이터를 h264, hca/adx 파일로 나눠 사용자가 ffmpeg로 변환할 수 있게 합니다.",
+      "input": ".usm 파일",
+      "output": "h264 파일과 hca/adx 파일이 묶인 ZIP"
+    },
+    "soon": "준비 중",
+    "input": "대응 파일",
+    "output": "결과"
+  }
+}

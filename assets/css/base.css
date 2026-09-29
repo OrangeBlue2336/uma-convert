@@ -66,10 +66,45 @@ canvas {
 }
 
 .page {
+  position: relative;
   width: 100%;
   max-width: var(--page-width);
   margin: 0 auto;
   padding: 48px 24px 64px;
+}
+
+/* 페이지 안에서 공통으로 쓰는 언어 전환기. 새 변환기에도 header 첫머리에 그대로 넣습니다. */
+.language-switcher {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.language-switcher button {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-right: 1px solid var(--rule);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.language-switcher button:last-child {
+  border-right: 0;
+}
+
+.language-switcher button:hover,
+.language-switcher button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--ink);
 }
 
 /* 키보드로 이동할 때 현재 위치를 보여줍니다. */
@@ -175,6 +210,11 @@ canvas {
 
   .page-title {
     font-size: 32px;
+  }
+
+  .language-switcher {
+    position: static;
+    margin: 0 0 20px auto;
   }
 }
 

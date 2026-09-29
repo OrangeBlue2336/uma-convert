@@ -52,7 +52,9 @@ export function parseBundle(bytes) {
       .join("");
     throw new ConvertError(
       `Unity 번들(UnityFS) 파일이 아닙니다. 파일 머리글: "${head}". ` +
-        "암호화되어 있거나 다른 종류의 파일일 수 있습니다."
+        "암호화되어 있거나 다른 종류의 파일일 수 있습니다.",
+      "error.bundle.notUnityFs",
+      { head },
     );
   }
 

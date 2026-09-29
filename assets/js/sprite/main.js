@@ -11,6 +11,9 @@ import { saveBlob, safeFileName, uniqueNames } from "../ui/download.js";
 import { createViewer } from "./viewer.js";
 import { createSpriteList } from "./list.js";
 import { CORRECTION_PRESETS, resizeRGBA } from "./correction.js";
+import { initI18n, t } from "../i18n/index.js";
+
+await initI18n();
 
 const $ = (id) => document.getElementById(id);
 
@@ -62,15 +65,15 @@ function setStatus(message, isError = false) {
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve)));
 
 function describeError(error) {
-  if (error instanceof ConvertError) return error.message;
+  if (error instanceof ConvertError) return error.key ? t(error.key, error.values, error.message) : error.message;
   console.error(error);
-  return `변환 중 문제가 생겼습니다: ${error.message}`;
+  return t("common.convertError", { message: error.message });
 }
 
 // ---------- 파일 열기 ----------
 
 async function openFile(file, extraNote = "") {
-  setStatus(`${file.name} 변환 중...`);
+  setStatus(t("sprite.converting", { name: file.name }, `${file.name} 변환 중...`));
   await nextFrame(); // 문구가 먼저 화면에 그려지도록 한 박자 쉽니다.
 
   try {
@@ -110,9 +113,9 @@ function showTexture(next) {
   const { texture, rgba } = next;
 
   resultTitle.textContent = texture.name;
-  resultInfo.textContent = `${texture.width} × ${texture.height} px, ${texture.formatName}, 조각 ${texture.sprites.length}개`;
+  resultInfo.textContent = t("sprite.resultInfo", { width: texture.width, height: texture.height, format: texture.formatName, count: texture.sprites.length }, `${texture.width} × ${texture.height} px, ${texture.formatName}, 조각 ${texture.sprites.length}개`);
   zipButton.hidden = texture.sprites.length === 0;
-  zipButton.textContent = `조각 ${texture.sprites.length}개 ZIP 저장`;
+  zipButton.textContent = t("sprite.saveZipCount", { count: texture.sprites.length }, `조각 ${texture.sprites.length}개 ZIP 저장`);
 
   viewer.load(texture, rgba, texture.sprites);
   list.load(texture.sprites, viewer.canvas);
@@ -124,7 +127,7 @@ function resetSelectionInfo() {
   hideCorrectionResult();
   selectionInfo.classList.remove("is-error");
   selectionInfo.textContent = current.texture.sprites.length
-    ? "조각을 누르면 이름과 크기가 여기에 나옵니다."
+    ? t("sprite.selectionHint", {}, "조각을 누르면 이름과 크기가 여기에 나옵니다.")
     : "";
 }
 
@@ -137,7 +140,7 @@ function selectSprite(index, { scrollList = false, scrollViewer = false } = {}) 
   selectionInfo.replaceChildren();
   const name = document.createElement("strong");
   name.textContent = sprite.name;
-  selectionInfo.append(name, ` ${sprite.width} × ${sprite.height} px, 위치 (${sprite.x}, ${sprite.y})`);
+  selectionInfo.append(name, t("sprite.selectionInfo", { width: sprite.width, height: sprite.height, x: sprite.x, y: sprite.y }, ` ${sprite.width} × ${sprite.height} px, 위치 (${sprite.x}, ${sprite.y})`));
 }
 
 textureSelect.addEventListener("change", () => {
@@ -195,20 +198,20 @@ function applyCorrection(presetKey) {
   const preset = CORRECTION_PRESETS[presetKey];
   const source = pickCorrectionSource();
   if (!source) {
-    window.alert("조각이 여러 개 있습니다. 먼저 보정할 조각을 하나 눌러 고른 뒤 다시 눌러 주세요.");
+    window.alert(t("sprite.pickCorrection", {}, "조각이 여러 개 있습니다. 먼저 보정할 조각을 하나 눌러 고른 뒤 다시 눌러 주세요."));
     return;
   }
 
   const resized = resizeRGBA(source.rgba, source.width, source.height, preset.width, preset.height);
 
-  correctionTitle.textContent = `${preset.label} 크기 보정 결과 — ${source.name}`;
+  correctionTitle.textContent = t("sprite.correctionResult", { label: t(`sprite.preset.${presetKey}`, {}, preset.label), name: source.name }, `${preset.label} 크기 보정 결과 — ${source.name}`);
   correctionSize.textContent = `${source.width} × ${source.height} px → ${resized.width} × ${resized.height} px`;
   correctionPreview.replaceChildren(resized.canvas);
   correctionResult.hidden = false;
   correctionResult.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
   correctionSaveButton.onclick = () =>
-    withBusy(correctionSaveButton, "생성 중...", async () => {
+    withBusy(correctionSaveButton, t("common.creating"), async () => {
       const png = await encodePNG(resized.rgba, resized.width, resized.height);
       saveBlob(pngBlob(png), `${safeFileName(source.name)}_${resized.width}x${resized.height}.png`);
     });
@@ -237,7 +240,7 @@ async function withBusy(button, busyLabel, task) {
 const pngBlob = (bytes) => new Blob([bytes], { type: "image/png" });
 
 pngButton.addEventListener("click", () =>
-  withBusy(pngButton, "생성 중...", async () => {
+  withBusy(pngButton, t("common.creating"), async () => {
     const { texture, rgba } = current;
     const png = await encodePNG(rgba, texture.width, texture.height);
     saveBlob(pngBlob(png), `${safeFileName(texture.name)}.png`);
@@ -245,13 +248,13 @@ pngButton.addEventListener("click", () =>
 );
 
 zipButton.addEventListener("click", () =>
-  withBusy(zipButton, "묶는 중...", async (setLabel) => {
+  withBusy(zipButton, t("common.packing"), async (setLabel) => {
     const { texture, rgba } = current;
     const names = uniqueNames(texture.sprites.map((s) => s.name));
     const entries = [];
 
     for (let i = 0; i < texture.sprites.length; i++) {
-      setLabel(`묶는 중 ${i + 1} / ${texture.sprites.length}`);
+      setLabel(t("sprite.packingProgress", { current: i + 1, total: texture.sprites.length }, `묶는 중 ${i + 1} / ${texture.sprites.length}`));
       const crop = cropSprite(rgba, texture.width, texture.sprites[i]);
       entries.push({ name: `${names[i]}.png`, data: await encodePNG(crop.rgba, crop.width, crop.height) });
     }
@@ -290,7 +293,7 @@ window.addEventListener("drop", (event) => {
   dropzone.classList.remove("is-over");
   const files = event.dataTransfer.files;
   if (files.length > 0) {
-    openFile(files[0], files.length > 1 ? "여러 파일 중 첫 번째 파일만 열었습니다." : "");
+    openFile(files[0], files.length > 1 ? t("common.firstFile") : "");
   }
 });
 

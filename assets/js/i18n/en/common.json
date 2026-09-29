@@ -1,0 +1,33 @@
+{
+  "language": {
+    "label": "Select language",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "footer": {
+    "notice": "Unofficial fan-made tool. Game resources are copyrighted by their respective owners."
+  },
+  "common": {
+    "open": "Open file",
+    "result": "Result",
+    "selectFile": "Choose file",
+    "dropSub": "or click here to choose a file",
+    "localOnly": "Files stay on your device and are never uploaded.",
+    "convertError": "Something went wrong while converting: {message}",
+    "firstFile": "Only the first of the dropped files was opened.",
+    "save": "Save",
+    "creating": "Creating...",
+    "packing": "Packing...",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyFailed": "Copy failed"
+  },
+  "error": {
+    "bundle": {
+      "notUnityFs": "Not a UnityFS bundle. File header: \"{head}\". It may be encrypted or a different file type."
+    },
+    "usm": {
+      "notCrid": "File does not begin with CRID. Check that it is a .usm file."
+    }
+  }
+}

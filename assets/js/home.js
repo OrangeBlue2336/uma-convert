@@ -1,6 +1,9 @@
 // tools.js의 목록을 읽어 메인 페이지의 타일을 만듭니다.
 
 import { tools } from "./tools.js";
+import { initI18n, t } from "./i18n/index.js";
+
+await initI18n();
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -27,15 +30,15 @@ function createTile(tool) {
   img.src = tool.image;
   img.alt = "";
   art.append(img);
-  if (soon) art.append(el("span", "tool-status", "준비 중"));
+  if (soon) art.append(el("span", "tool-status", t("tool.soon")));
 
   const body = el("div", "tool-body");
-  body.append(el("h2", "tool-title", tool.title), el("p", "tool-desc", tool.desc));
+  body.append(el("h2", "tool-title", t(tool.titleKey)), el("p", "tool-desc", t(tool.descKey)));
 
-  if (tool.input || tool.output) {
+  if (tool.inputKey || tool.outputKey) {
     const io = el("dl", "tool-io");
-    ioRow(io, "대응 파일", tool.input);
-    ioRow(io, "결과", tool.output);
+    ioRow(io, t("tool.input"), t(tool.inputKey));
+    ioRow(io, t("tool.output"), t(tool.outputKey));
     body.append(io);
   }
 
