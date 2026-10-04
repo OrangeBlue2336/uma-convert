@@ -3,7 +3,8 @@
     "title": "UmaConvert",
     "description": "Web tools for converting files extracted from Umamusume with UmamusumeExplorer.",
     "lede": "Convert files extracted from Umamusume with UmamusumeExplorer directly in your browser. Files stay on your device and are never uploaded.",
-    "ledeAfter": " lets you convert files extracted from the game directly in your browser. Files stay on your device and are never uploaded.",
+    "ledeBefore": "Convert files extracted from the game folder using ",
+    "ledeAfter": " directly in your browser. Files stay on your device and are never uploaded.",
     "noScript": "This page requires JavaScript. Please enable it in your browser settings."
   },
   "tool": {

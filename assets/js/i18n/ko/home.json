@@ -3,6 +3,7 @@
     "title": "UmaConvert",
     "description": "UmamusumeExplorer를 이용하여 게임 폴더에서 꺼낸 파일을 브라우저에서 바로 변환하는 도구 모음",
     "lede": "UmamusumeExplorer를 이용하여 게임 폴더에서 꺼낸 파일을 브라우저에서 바로 변환합니다. 파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.",
+    "ledeBefore": "",
     "ledeAfter": "를 이용하여 게임 폴더에서 꺼낸 파일을 브라우저에서 바로 변환합니다. 파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.",
     "noScript": "이 페이지는 JavaScript가 필요합니다. 브라우저 설정에서 켜 주세요."
   },
