@@ -74,7 +74,7 @@ function render() {
 
   resultTitle.textContent = result.sourceName;
   const parts = [t("usm.videoCount", { count: result.videoTracks.length }, `영상 ${result.videoTracks.length}개`), t("usm.audioCount", { count: result.audioTracks.length }, `오디오 ${result.audioTracks.length}개`)];
-  if (result.hasAlpha) parts.push(t("usm.alphaExcluded", {}, "알파 스트림 있음(제외됨)"));
+  if (result.hasAlpha) parts.push(t("usm.alphaIncluded", { count: result.alphaTracks.length }, `알파 스트림 ${result.alphaTracks.length}개`));
   resultInfo.textContent = t("usm.resultInfo", { parts: parts.join(" · "), name: current.fileName }, `${parts.join(" · ")} · ${current.fileName}에서 읽음`);
 
   renderKeyNote();
@@ -128,6 +128,10 @@ function renderSummary(result, multiVideo) {
   for (const track of result.videoTracks) {
     const name = multiVideo ? `video_${track.type}.h264` : "video.h264";
     rows.push({ name, size: track.bytes.length, detail: formatVideoInfo(track.info) });
+  }
+  const multiAlpha = result.alphaTracks.length > 1;
+  for (const track of result.alphaTracks) {
+    rows.push({ name: multiAlpha ? `alpha_${track.type}.m2v` : "alpha.m2v", size: track.bytes.length, detail: formatVideoInfo(track.info) });
   }
   for (const track of result.audioTracks) {
     rows.push({
@@ -203,6 +207,10 @@ zipButton.addEventListener("click", async () => {
     const entries = [];
     for (const track of result.videoTracks) {
       entries.push({ name: multiVideo ? `video_${track.type}.h264` : "video.h264", data: track.bytes });
+    }
+    const multiAlpha = result.alphaTracks.length > 1;
+    for (const track of result.alphaTracks) {
+      entries.push({ name: multiAlpha ? `alpha_${track.type}.m2v` : "alpha.m2v", data: track.bytes });
     }
     for (const track of result.audioTracks) {
       entries.push({ name: audioFileName(track), data: track.bytes });

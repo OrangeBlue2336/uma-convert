@@ -1,0 +1,255 @@
+{
+  "mdb": {
+    "title": "master.mdb Explorer - UmaConvert",
+    "crumb": "Explore master.mdb",
+    "heading": "master.mdb Explorer",
+    "lede": "Open the game database (master.mdb), browse its tables, turn numeric codes into names and links, and compare two versions.",
+    "drop": "Drop a master.mdb file here",
+    "hint": "Despite the .mdb name this is a SQLite file, and this tool only reads it, meaning the original file is never modified. Files around 40 MB open in the browser. Names and links for numeric codes come only from a hand-verified dictionary. Connections not in it are shown separately as guesses. The file is processed only on this device and is never uploaded.",
+    "rows": "{n} rows",
+    "tab": {
+      "tables": "Tables",
+      "search": "Text search",
+      "domains": "Domain view",
+      "diff": "Compare versions"
+    },
+    "open": {
+      "reading": "Reading {name}…",
+      "loadingTexts": "Loading texts (text_data)…",
+      "factFile": "{name} ({size} MB)",
+      "factTables": "{n} tables",
+      "factTexts": "{n} texts in {categories} categories",
+      "noTexts": "There is no text_data table, so name resolution and text search are unavailable.",
+      "mapMissing": "The mapping dictionary (mdb-map.json) could not be loaded, so name resolution, links and the domain view are limited."
+    },
+    "tables": {
+      "search": "Search table names",
+      "count": "{shown} / {total} (◆ = has name lookup)",
+      "loading": "Reading {name}…",
+      "loadingProgress": "Reading {name}… {done} / {total} rows",
+      "nameColumn": "Name",
+      "filterPlaceholder": "filter",
+      "filterOf": "Filter {column}",
+      "editLabels": "Edit value labels for this column",
+      "info": "{total} rows · {cols} columns",
+      "infoFiltered": "{shown} rows shown (of {total}) · {cols} columns",
+      "page": "Page {page} / {pages}",
+      "csv": "Save CSV",
+      "json": "Save JSON",
+      "globalFilter": "Search this whole table",
+      "pageSize": "Per page",
+      "columns": "Columns",
+      "colAll": "Show all",
+      "colNone": "First only",
+      "exportDisplay": "Include names/dates when saving",
+      "filterHint": "Filter syntax under each column: text (contains) · =value (exact) · >number · <number · !text (exclude). Times are JST (UTC+9)."
+    },
+    "search": {
+      "hint": "Searches text_data (every name, description and other string). Enter a number (e.g. 200011) to find texts with that index. [Open] jumps to the row that owns the text.",
+      "placeholder": "Text or number to find",
+      "categoryLabel": "Category",
+      "allCategories": "All categories",
+      "open": "Open",
+      "noCandidate": "No automatic candidate",
+      "findOwner": "Find owner table",
+      "finding": "Searching…",
+      "none": "No results.",
+      "count": "{total} results",
+      "limited": "Showing {shown} of {total}. Narrow the query or pick a category.",
+      "col": {
+        "category": "Category",
+        "index": "Index",
+        "text": "Text",
+        "owner": "Go to"
+      },
+      "weakTitle": "Every index exists in this table, but only {percent}% of its rows have the text, so this is a weak candidate."
+    },
+    "domains": {
+      "label": "Domain",
+      "search": "Find by name or number",
+      "none": "This file has no tables usable for the domain view.",
+      "pick": "Pick a domain above.",
+      "pickEntity": "Pick an item from the list on the left.",
+      "loading": "Reading list…",
+      "listCount": "{total} items",
+      "listLimited": "Showing {shown} of {total}. Use search to narrow it down.",
+      "sectionLimited": "{shown} of {total} rows",
+      "sectionEmpty": "No linked rows.",
+      "viewAll": "View all in {table}",
+      "openRow": "Row details",
+      "textsAuto": "{n} guessed texts (not in the dictionary)",
+      "textsWeak": "{n} weak guessed texts (only some rows have them)"
+    },
+    "domain": {
+      "chara": {
+        "title": "Characters",
+        "section": {
+          "cards": "Trainee Umamusume (race outfits)",
+          "supports": "Support cards"
+        }
+      },
+      "card": {
+        "title": "Trainee Umamusume (race outfits)",
+        "section": {
+          "rarity": "Stats and aptitudes by rarity",
+          "skills": "Skill set",
+          "upgrades": "Skill upgrades"
+        }
+      },
+      "support": {
+        "title": "Support cards",
+        "section": {
+          "effects": "Effect values",
+          "unique": "Unique effect",
+          "skillset": "Hint skill set"
+        }
+      },
+      "skill": {
+        "title": "Skills",
+        "section": {
+          "conditions": "Conditions and effects",
+          "siblings": "Skills in the same group",
+          "holders": "Trainee Umamusume (race outfits) with this skill",
+          "upgrades": "Skill upgrades",
+          "holdersGroup": "Trainee Umamusume (race outfits) with another skill of the same group",
+          "hints": "Support cards that give this skill as a hint",
+          "hintsGroup": "Support cards that give another skill of the same group as a hint"
+        },
+        "sectionHint": {
+          "holders": "Found in the trainee skill sets (available_skill_set).",
+          "holdersGroup": "A skill group bundles skills of different grades. These outfits do not have this exact skill but have another skill of the same group. Outfits already listed above are left out.",
+          "hints": "Found in the support card hint lists (single_mode_hint_gain).",
+          "hintsGroup": "A support card may give only one skill of a group as its hint (for example 202711 has rarity 2 and 202712 has rarity 1), so cards that give another skill of the same group are collected here. Cards already listed above are left out; see \"Skills in the same group\" for the group's members."
+        }
+      },
+      "race": {
+        "title": "Races",
+        "section": {
+          "race": "Race info",
+          "course": "Course",
+          "instances": "Other runnings of the same race"
+        }
+      },
+      "mission": {
+        "title": "Missions",
+        "section": {
+          "steps": "Missions in the same step group"
+        }
+      }
+    },
+    "role": {
+      "name": "Name",
+      "cv": "Voice actor",
+      "dorm": "Dorm",
+      "catch": "Catchphrase",
+      "birthday": "Birthday",
+      "height": "Height",
+      "grade": "Division",
+      "intro": "Self-introduction",
+      "shoes": "Shoe size",
+      "nameEn": "English name",
+      "nickname": "Nickname",
+      "title": "Title",
+      "charaName": "Character name",
+      "desc": "Description",
+      "nameShort": "Short name",
+      "weight": "Weight",
+      "strengths": "Good at",
+      "weaknesses": "Not good at",
+      "ears": "Ears",
+      "tail": "Tail",
+      "family": "Family",
+      "ownRule": "Personal rule",
+      "wallpaper": "Phone wallpaper",
+      "preRace": "Before a race…",
+      "bestSubject": "Best subject",
+      "secretBoast": "Secret pride",
+      "oftenBuys": "Often buys",
+      "valentineMale": "Valentine's Day message (male trainer)",
+      "valentineFemale": "Valentine's Day message (female trainer)",
+      "valentineName": "Name of Valentine's Day chocolate",
+      "TPfullNotif": "TP full notification",
+      "RPfullNotif": "RP full notification",
+      "tourEndNotif": "Tour end notification",
+      "independentEndNotif": "Independent training end notification"
+    },
+    "drawer": {
+      "label": "Row details",
+      "back": "← Back",
+      "close": "Close",
+      "missing": "This row could not be found.",
+      "openTable": "View in table",
+      "openDomain": "View in {name}",
+      "hideEmpty": "Hide 0 and empty values",
+      "texts": "Linked texts (text_data)",
+      "textsHint": "Confirmed entries are categories registered in the name dictionary; guesses are categories whose indexes largely overlap this table's ids.",
+      "textsAuto": "Guessed (not in dictionary)",
+      "textsOther": "{n} texts with the same index only",
+      "textsOtherHint": "These are most likely texts of other tables that merely share the number.",
+      "category": "Category",
+      "refs": "Where this is referenced",
+      "refsHint": "Only reference columns registered in the dictionary are searched. The first search scans the related tables and can take a few seconds.",
+      "refsFind": "Find",
+      "refsRunning": "Searching…",
+      "refsProgress": "Searching… {done} / {total}",
+      "refsFound": "Found in {n} tables",
+      "refsNone": "Nothing references this.",
+      "textsWeak": "{n} weak guesses (only some rows have them)",
+      "textsWeakHint": "Every index of these categories exists in this table, but only some of its rows have the text (for example items that only newer characters have). They are often right, but the same condition also matches unrelated tables, so they are not confirmed. Once verified, register them under tables in mdb-map.json. The percentage is the share of this table's rows that have the category."
+    },
+    "labels": {
+      "title": "Value labels: {column}",
+      "hint": "Write what each numeric code means and it will show up in tables and details. Saved only in this browser; export as JSON to reuse elsewhere.",
+      "placeholder": "Meaning",
+      "save": "Save",
+      "cancel": "Cancel",
+      "export": "Export all labels",
+      "import": "Import labels",
+      "importError": "Could not read the label file. Check that it is a JSON file made by Export."
+    },
+    "diff": {
+      "hint": "The file you opened is treated as the \"new version\" and the file you drop below as the \"old version\". Added, removed and changed rows are listed per table, and new names of key items such as skills and cards are collected at the top. If the direction is wrong, press [Swap].",
+      "drop": "Drop the older master.mdb to compare here",
+      "reading": "Reading {name}…",
+      "loadingTexts": "Loading texts of the old version…",
+      "running": "Comparing… {done} / {total} · {name}",
+      "files": "Old: {oldName} → New: {newName}",
+      "totals": "{tables} changed tables · {added} rows added · {removed} removed · {changed} changed · {addedTables} new tables · {removedTables} dropped tables",
+      "errors": "{n} tables could not be compared: {names}",
+      "addedTables": "New tables",
+      "removedTables": "Dropped tables",
+      "entities": "Added/removed key items",
+      "col": {
+        "table": "Table",
+        "added": "Added",
+        "removed": "Removed",
+        "changed": "Changed"
+      },
+      "schemaChanged": "Columns changed",
+      "typeChanged": "Type changed",
+      "rowCounts": "Old {oldCount} rows → New {newCount} rows · Compared by key: {keys}",
+      "noKey": "none (rows with identical content are paired)",
+      "tab": {
+        "added": "Added",
+        "removed": "Removed",
+        "changed": "Changed"
+      },
+      "limited": "Showing {shown} of {total}.",
+      "swap": "Swap",
+      "onlyChanged": "Only changed tables",
+      "pick": "Pick a table on the left."
+    },
+    "error": {
+      "unexpected": "An unexpected error occurred: {message}"
+    }
+  },
+  "error": {
+    "sqlite": {
+      "notSqlite": "This is not a SQLite file. File header: \"{head}\". It may be encrypted or another kind of file.",
+      "corrupt": "The SQLite file is damaged or uses an unsupported structure: {detail}",
+      "encoding": "SQLite files stored as UTF-16 are not supported.",
+      "noTable": "There is no table \"{name}\".",
+      "withoutRowid": "Table \"{name}\" is WITHOUT ROWID, which is not supported."
+    }
+  }
+}

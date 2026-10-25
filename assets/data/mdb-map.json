@@ -1,0 +1,827 @@
+{
+ "version": 1,
+ "note": "사람이 확인해 확정한 매핑입니다. texts: 테이블의 id가 text_data(category,index)의 index와 같은 것, refs: 컬럼 이름이 다른 테이블의 id를 가리키는 것(except/only로 사용처 제한), domains: 도메인 보기 설정.",
+ "tables": {
+  "chara_data": {
+   "texts": {
+    "6": "name",
+    "7": "cv",
+    "8": "dorm",
+    "9": "weight",
+    "144": "catch",
+    "157": "birthday",
+    "158": "height",
+    "162": "grade",
+    "163": "intro",
+    "164": "strengths",
+    "165": "weaknesses",
+    "166": "ears",
+    "167": "tail",
+    "168": "shoes",
+    "169": "family",
+    "184": "TPfullNotif",
+    "185": "RPfullNotif",
+    "258": "ownRule",
+    "259": "wallpaper",
+    "260": "preRace",
+    "261": "bestSubject",
+    "262": "secretBoast",
+    "263": "oftenBuys",
+    "360": "tourEndNotif",
+    "372": "nameEn",
+    "376": "nickname",
+    "469": "independentEndNotif"
+   }
+  },
+  "card_data": {
+   "texts": {
+    "4": "name",
+    "5": "title",
+    "271": "valentineMale",
+    "272": "valentineFemale",
+    "273": "valentineName"
+   }
+  },
+  "support_card_data": {
+   "texts": {
+    "75": "name",
+    "76": "title",
+    "77": "charaName",
+    "88": "intro"
+   }
+  },
+  "skill_data": {
+   "texts": {
+    "47": "name",
+    "48": "desc"
+   }
+  },
+  "item_data": {
+   "texts": {
+    "23": "name",
+    "24": "desc"
+   }
+  },
+  "dress_data": {
+   "texts": {
+    "14": "name",
+    "15": "desc"
+   }
+  },
+  "gacha_data": {
+   "texts": {
+    "13": "name"
+   }
+  },
+  "race_instance": {
+   "texts": {
+    "28": "name",
+    "29": "nameShort"
+   }
+  },
+  "race": {
+   "texts": {
+    "32": "name"
+   }
+  },
+  "race_track": {
+   "texts": {
+    "31": "name",
+    "35": "nameShort"
+   }
+  },
+  "race_jikkyo_race": {
+   "texts": {
+    "33": "name"
+   }
+  },
+  "honor_data": {
+   "texts": {
+    "65": "name",
+    "66": "desc"
+   }
+  },
+  "mission_data": {
+   "texts": {
+    "67": "name"
+   }
+  },
+  "topics": {
+   "texts": {
+    "68": "name",
+    "69": "desc"
+   }
+  },
+  "login_bonus_data": {
+   "texts": {
+    "70": "name"
+   }
+  },
+  "main_story_data": {
+   "texts": {
+    "94": "name"
+   }
+  },
+  "main_story_part": {
+   "texts": {
+    "93": "name",
+    "112": "title"
+   }
+  },
+  "piece_data": {
+   "texts": {
+    "113": "name",
+    "114": "desc"
+   }
+  },
+  "nickname": {
+   "texts": {
+    "130": "name",
+    "131": "desc"
+   }
+  },
+  "item_exchange_top": {
+   "texts": {
+    "39": "name",
+    "40": "desc"
+   }
+  },
+  "story_event_mission": {
+   "texts": {
+    "190": "name"
+   }
+  },
+  "skill_upgrade_condition": {
+   "texts": {
+    "290": "desc"
+   }
+  }
+ },
+ "refs": {
+  "chara_id": {
+   "table": "chara_data",
+   "except": [
+    "daily_race_npc",
+    "main_story_race_chara_data",
+    "single_mode_aoharu_result_cutt",
+    "story_live_position"
+   ]
+  },
+  "character_id": {
+   "table": "chara_data",
+   "except": []
+  },
+  "card_id": {
+   "table": "card_data",
+   "except": [
+    "exchange_ticket_detail",
+    "gacha_available",
+    "gacha_exchange",
+    "select_pickup"
+   ]
+  },
+  "support_card_id": {
+   "table": "support_card_data",
+   "except": []
+  },
+  "skill_id": {
+   "table": "skill_data",
+   "except": []
+  },
+  "item_id": {
+   "table": "item_data",
+   "except": [
+    "campaign_single_race_add_reward",
+    "campaign_walking_reward_set",
+    "champions_entry_reward",
+    "collect_raid_all_reward",
+    "collect_raid_individual_reward",
+    "factor_research_box_reward",
+    "gacha_item_exchange",
+    "gacha_piece",
+    "gacha_stampsheet_reward",
+    "heroes_league_rank_reward_group",
+    "heroes_ranking_reward",
+    "heroes_skill_item",
+    "heroes_special_reward",
+    "item_pack",
+    "jobs_reward_sort_disp_order",
+    "login_bonus_detail",
+    "mission_data",
+    "rating_race_reward_group",
+    "single_mode_12_dig_item",
+    "single_mode_difficulty_box_reward",
+    "single_mode_difficulty_data",
+    "single_mode_difficulty_mode",
+    "single_mode_event_item_detail",
+    "single_mode_free_shop_item",
+    "single_mode_race_limit_reward",
+    "single_mode_reward_set",
+    "single_mode_sport_item_effect",
+    "story_event_bingo_reward",
+    "story_event_mission",
+    "story_event_point_reward",
+    "team_building_rank_reward_group",
+    "team_building_win_reward",
+    "team_stadium_rank",
+    "training_challenge_ranking_reward",
+    "transfer_event_reward",
+    "transfer_rotation_reward"
+   ]
+  },
+  "dress_id": {
+   "table": "dress_data",
+   "except": []
+  },
+  "race_dress_id": {
+   "table": "dress_data",
+   "except": []
+  },
+  "race_instance_id": {
+   "table": "race_instance",
+   "except": []
+  },
+  "race_track_id": {
+   "table": "race_track",
+   "except": []
+  },
+  "gacha_id": {
+   "table": "gacha_data",
+   "except": []
+  },
+  "race_id": {
+   "table": "race",
+   "except": []
+  },
+  "login_bonus_id": {
+   "table": "login_bonus_data",
+   "except": []
+  },
+  "nickname_id": {
+   "table": "nickname",
+   "except": []
+  },
+  "get_dress_id": {
+   "table": "dress_data",
+   "except": []
+  },
+  "get_piece_id": {
+   "table": "piece_data",
+   "except": []
+  },
+  "exchange_item_id": {
+   "table": "item_data",
+   "except": []
+  },
+  "unique_skill_id": {
+   "table": "skill_data",
+   "except": []
+  },
+  "course_set": {
+   "table": "race_course_set",
+   "only": [
+    "race"
+   ]
+  }
+ },
+ "domains": [
+  {
+   "id": "chara",
+   "table": "chara_data",
+   "listColumns": [
+    "id",
+    "@name",
+    "birth_year",
+    "birth_month",
+    "birth_day",
+    "height"
+   ],
+   "facts": [
+    "birth_year",
+    "birth_month",
+    "birth_day",
+    "height",
+    "bust",
+    "sex",
+    "start_date"
+   ],
+   "sections": [
+    {
+     "id": "cards",
+     "steps": [
+      {
+       "table": "card_data",
+       "match": "chara_id"
+      }
+     ],
+     "columns": [
+      "id",
+      "@name",
+      "default_rarity",
+      "limited_chara",
+      "running_style",
+      "start_date"
+     ]
+    },
+    {
+     "id": "supports",
+     "steps": [
+      {
+       "table": "support_card_data",
+       "match": "chara_id"
+      }
+     ],
+     "columns": [
+      "id",
+      "@name",
+      "rarity",
+      "support_card_type",
+      "start_date"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "card",
+   "table": "card_data",
+   "listColumns": [
+    "id",
+    "@name",
+    "chara_id",
+    "default_rarity",
+    "running_style",
+    "limited_chara",
+    "start_date"
+   ],
+   "facts": [
+    "chara_id",
+    "default_rarity",
+    "limited_chara",
+    "running_style",
+    "talent_speed",
+    "talent_stamina",
+    "talent_pow",
+    "talent_guts",
+    "talent_wiz",
+    "start_date"
+   ],
+   "sections": [
+    {
+     "id": "rarity",
+     "steps": [
+      {
+       "table": "card_rarity_data",
+       "match": "card_id"
+      }
+     ],
+     "columns": [
+      "rarity",
+      "speed",
+      "stamina",
+      "pow",
+      "guts",
+      "wiz",
+      "proper_distance_short",
+      "proper_distance_mile",
+      "proper_distance_middle",
+      "proper_distance_long",
+      "proper_running_style_nige",
+      "proper_running_style_senko",
+      "proper_running_style_sashi",
+      "proper_running_style_oikomi",
+      "proper_ground_turf",
+      "proper_ground_dirt"
+     ]
+    },
+    {
+     "id": "skills",
+     "steps": [
+      {
+       "table": "available_skill_set",
+       "match": "available_skill_set_id",
+       "from": "available_skill_set_id"
+      }
+     ],
+     "columns": [
+      "skill_id",
+      "need_rank"
+     ]
+    },
+    {
+     "id": "upgrades",
+     "steps": [
+      {
+       "table": "skill_upgrade_description",
+       "match": "card_id"
+      }
+     ],
+     "columns": [
+      "rank",
+      "skill_id",
+      "start_date"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "support",
+   "table": "support_card_data",
+   "listColumns": [
+    "id",
+    "@name",
+    "chara_id",
+    "rarity",
+    "support_card_type",
+    "start_date"
+   ],
+   "facts": [
+    "chara_id",
+    "rarity",
+    "support_card_type",
+    "command_type",
+    "command_id",
+    "effect_table_id",
+    "unique_effect_id",
+    "skill_set_id",
+    "start_date"
+   ],
+   "sections": [
+    {
+     "id": "effects",
+     "steps": [
+      {
+       "table": "support_card_effect_table",
+       "match": "id",
+       "from": "effect_table_id"
+      }
+     ],
+     "columns": [
+      "type",
+      "init",
+      "limit_lv5",
+      "limit_lv10",
+      "limit_lv15",
+      "limit_lv20",
+      "limit_lv25",
+      "limit_lv30",
+      "limit_lv35",
+      "limit_lv40",
+      "limit_lv45",
+      "limit_lv50"
+     ]
+    },
+    {
+     "id": "unique",
+     "steps": [
+      {
+       "table": "support_card_unique_effect",
+       "match": "id",
+       "from": "unique_effect_id"
+      }
+     ],
+     "columns": [
+      "lv",
+      "type_0",
+      "value_0",
+      "type_1",
+      "value_1"
+     ]
+    },
+    {
+     "id": "skillset",
+     "steps": [
+      {
+       "table": "skill_set",
+       "match": "id",
+       "from": "skill_set_id"
+      }
+     ],
+     "layout": "vertical",
+     "hideZero": true
+    }
+   ]
+  },
+  {
+   "id": "skill",
+   "table": "skill_data",
+   "listColumns": [
+    "id",
+    "@name",
+    "rarity",
+    "skill_category",
+    "group_id",
+    "grade_value",
+    "condition_1"
+   ],
+   "facts": [
+    "rarity",
+    "group_id",
+    "group_rate",
+    "skill_category",
+    "grade_value",
+    "tag_id",
+    "activate_lot",
+    "priority",
+    "unique_skill_id_1",
+    "unique_skill_id_2"
+   ],
+   "sections": [
+    {
+     "id": "conditions",
+     "self": true,
+     "layout": "vertical",
+     "hideZero": true,
+     "columns": [
+      "precondition_1",
+      "condition_1",
+      "float_ability_time_1",
+      "float_cooldown_time_1",
+      "ability_type_1_1",
+      "float_ability_value_1_1",
+      "target_type_1_1",
+      "ability_type_1_2",
+      "float_ability_value_1_2",
+      "precondition_2",
+      "condition_2",
+      "float_ability_time_2",
+      "float_cooldown_time_2",
+      "ability_type_2_1",
+      "float_ability_value_2_1",
+      "ability_type_2_2",
+      "float_ability_value_2_2"
+     ]
+    },
+    {
+     "id": "siblings",
+     "steps": [
+      {
+       "table": "skill_data",
+       "match": "group_id",
+       "from": "group_id"
+      }
+     ],
+     "columns": [
+      "id",
+      "@name",
+      "rarity",
+      "group_rate",
+      "grade_value"
+     ]
+    },
+    {
+     "id": "holders",
+     "steps": [
+      {
+       "table": "available_skill_set",
+       "match": "skill_id",
+       "from": "id"
+      },
+      {
+       "table": "card_data",
+       "match": "available_skill_set_id",
+       "from": "available_skill_set_id"
+      }
+     ],
+     "columns": [
+      "id",
+      "@name",
+      "default_rarity",
+      "start_date"
+     ]
+    },
+    {
+     "id": "holdersGroup",
+     "minus": "holders",
+     "hideEmpty": true,
+     "steps": [
+      {
+       "table": "skill_data",
+       "match": "group_id",
+       "from": "group_id",
+       "excludeRoot": true
+      },
+      {
+       "table": "available_skill_set",
+       "match": "skill_id",
+       "from": "id"
+      },
+      {
+       "table": "card_data",
+       "match": "available_skill_set_id",
+       "from": "available_skill_set_id"
+      }
+     ],
+     "columns": [
+      "id",
+      "@name",
+      "default_rarity",
+      "start_date"
+     ]
+    },
+    {
+     "id": "hints",
+     "steps": [
+      {
+       "table": "single_mode_hint_gain",
+       "match": "hint_value_1",
+       "from": "id",
+       "where": {
+        "hint_gain_type": 0
+       }
+      },
+      {
+       "table": "support_card_data",
+       "match": "id",
+       "from": "support_card_id"
+      }
+     ],
+     "columns": [
+      "id",
+      "@name",
+      "chara_id",
+      "rarity",
+      "support_card_type"
+     ]
+    },
+    {
+     "id": "hintsGroup",
+     "minus": "hints",
+     "hideEmpty": true,
+     "steps": [
+      {
+       "table": "skill_data",
+       "match": "group_id",
+       "from": "group_id",
+       "excludeRoot": true
+      },
+      {
+       "table": "single_mode_hint_gain",
+       "match": "hint_value_1",
+       "from": "id",
+       "where": {
+        "hint_gain_type": 0
+       }
+      },
+      {
+       "table": "support_card_data",
+       "match": "id",
+       "from": "support_card_id"
+      }
+     ],
+     "columns": [
+      "id",
+      "@name",
+      "chara_id",
+      "rarity",
+      "support_card_type"
+     ]
+    },
+    {
+     "id": "upgrades",
+     "steps": [
+      {
+       "table": "skill_upgrade_description",
+       "match": "skill_id"
+      }
+     ],
+     "columns": [
+      "card_id",
+      "rank",
+      "start_date"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "race",
+   "table": "race_instance",
+   "listColumns": [
+    "id",
+    "@name",
+    "race_id",
+    "date",
+    "time",
+    "race_number"
+   ],
+   "facts": [
+    "race_id",
+    "npc_group_id",
+    "date",
+    "time",
+    "clock_time",
+    "race_number"
+   ],
+   "sections": [
+    {
+     "id": "race",
+     "steps": [
+      {
+       "table": "race",
+       "match": "id",
+       "from": "race_id"
+      }
+     ],
+     "layout": "vertical",
+     "columns": [
+      "group",
+      "grade",
+      "course_set",
+      "entry_num",
+      "is_dirtgrade",
+      "start_date"
+     ]
+    },
+    {
+     "id": "course",
+     "steps": [
+      {
+       "table": "race",
+       "match": "id",
+       "from": "race_id"
+      },
+      {
+       "table": "race_course_set",
+       "match": "id",
+       "from": "course_set"
+      }
+     ],
+     "layout": "vertical",
+     "columns": [
+      "race_track_id",
+      "distance",
+      "ground",
+      "inout",
+      "turn"
+     ]
+    },
+    {
+     "id": "instances",
+     "steps": [
+      {
+       "table": "race_instance",
+       "match": "race_id",
+       "from": "race_id"
+      }
+     ],
+     "columns": [
+      "id",
+      "@name",
+      "date",
+      "time",
+      "race_number"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mission",
+   "table": "mission_data",
+   "listColumns": [
+    "id",
+    "@name",
+    "mission_type",
+    "condition_type",
+    "item_category",
+    "item_id",
+    "item_num",
+    "start_date"
+   ],
+   "facts": [
+    "mission_type",
+    "condition_type",
+    "condition_value_1",
+    "condition_value_2",
+    "condition_value_3",
+    "condition_value_4",
+    "condition_num",
+    "step_group_id",
+    "step_order",
+    "item_category",
+    "item_id",
+    "item_num",
+    "event_id",
+    "start_date",
+    "end_date"
+   ],
+   "sections": [
+    {
+     "id": "steps",
+     "steps": [
+      {
+       "table": "mission_data",
+       "match": "step_group_id",
+       "from": "step_group_id"
+      }
+     ],
+     "columns": [
+      "id",
+      "@name",
+      "step_order",
+      "item_num",
+      "start_date"
+     ]
+    }
+   ]
+  }
+ ]
+}

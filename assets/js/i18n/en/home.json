@@ -26,6 +26,12 @@
       "input": ".usm files",
       "output": "A ZIP containing h264 and hca/adx files"
     },
+    "mdb": {
+      "title": "master.mdb Explorer",
+      "desc": "Open the game database, browse its tables, turn numeric codes into names and links, and compare two versions.",
+      "input": "A master.mdb file (two when comparing)",
+      "output": "Browse on screen; save tables as CSV/JSON"
+    },
     "soon": "WIP",
     "input": "Input",
     "output": "Output"

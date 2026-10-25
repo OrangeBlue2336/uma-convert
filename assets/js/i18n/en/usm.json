@@ -7,13 +7,13 @@
     "next": "Next steps",
     "drop": "Drop a .usm file here",
     "saveZip": "Save ZIP",
-    "hint": "Video is extracted as H.264 and audio as HCA/ADX unchanged. They cannot be played directly; use vgmstream and ffmpeg as described in the Next steps tab to create a playable MKV. Video is always decrypted with the known key. If the result looks wrong, use Convert again without key on the results page to extract the original bytes. Alpha-channel compositing is not supported yet. Files stay on your device and are never uploaded.",
-    "alphaNote": "This USM also has an alpha (transparency) stream, but it will only extract RGB video without compositing it. Playback still works, only background transparency effects are missing.",
+    "hint": "Video is extracted as H.264 and audio as HCA/ADX unchanged. They cannot be played directly; use vgmstream and ffmpeg as described in the Next steps tab to create a playable MKV. When an alpha stream exists, it is extracted too and the guided command creates output.mkv with alpha preserved. Video is always decrypted with the known key. If the result looks wrong, use Convert again without key on the results page to extract the original bytes. Files stay on your device and are never uploaded.",
+    "alphaNote": "The alpha (transparency) stream was also extracted as alpha.m2v. The ffmpeg command in Next steps combines this mask into output.mkv while preserving alpha.",
     "nextHint": "The ZIP also contains these instructions in README.txt. The commands below use the filenames from the ZIP you just saved, so run them inside the extracted folder.",
     "opening": "Opening {name}...",
     "videoCount": "{count} video tracks",
     "audioCount": "{count} audio tracks",
-    "alphaExcluded": "Alpha stream present (excluded)",
+    "alphaIncluded": "{count} alpha streams",
     "resultInfo": "{parts} · read from {name}",
     "keyAppliedAdx": "Decrypted video and ADX audio with the known key.",
     "keyApplied": "Decrypted video with the known key.",
@@ -41,6 +41,7 @@
       "videoOnly": {
         "title": "{number}. Make a playable video-only file",
         "noAudio": "This USM has no audio, so you only need to put the video into a container.",
+        "alpha": "This combines the alpha mask into the video and creates a lossless FFV1 MKV. The file may be larger than the original H.264 MKV.",
         "unknownAudio": "The audio format could not be identified, so create a video-only MKV first. After identifying the audio above, you can add it to this MKV later if needed.",
         "label": "Create MKV"
       },
@@ -72,8 +73,9 @@
       "frames": "{count} frames total",
       "channels": "{count} channels",
       "noAudio": "(This USM has no audio stream.)",
-      "alpha": "This USM contains an alpha (transparency) stream, but extraction is not supported as of now.",
-      "alphaDetail": "(RGB video plays normally without compositing; only background transparency effects are absent.)",
+      "alpha": "The alpha (transparency) stream was extracted as alpha.m2v.",
+      "alphaDetail": "The ffmpeg command in the next steps combines this mask with RGB video to create output.mkv with alpha preserved.",
+      "alphaStream": "alpha mask",
       "steps": "--- Creating a playable file ---",
       "footer": "Unofficial fan-made tool."
     }

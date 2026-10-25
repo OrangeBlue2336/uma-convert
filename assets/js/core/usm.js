@@ -1,4 +1,5 @@
-// CRI USM(.usm) 컨테이너를 열어 안에 든 H.264 영상과 HCA 오디오를 그대로(원본 바이트로) 꺼냅니다.
+// CRI USM(.usm) 컨테이너를 열어 안에 든 H.264 영상, MPEG-2 알파 마스크, ADX/HCA 오디오를
+// 그대로(복호화된 원본 바이트로) 꺼냅니다.
 //
 // 왜 여기서 MKV를 만들지 않는가 (plan.md의 선택지 A):
 //   H.264 접근 단위를 MKV 트랙으로 묶으려면 컨테이너 저작 로직이 필요하고, HCA는 일반 플레이어가 재생하지
@@ -327,6 +328,7 @@ function buildAudioTracks(partsMap, infoMap, audioKey) {
  *   sourceName: string,
  *   videoTracks: { type: number, bytes: Uint8Array, info: Record<string, any>|null }[],
  *   audioTracks: { type: number, bytes: Uint8Array, info: Record<string, any>|null, format: { ext: string, label: string|null } }[],
+ *   alphaTracks: { type: number, bytes: Uint8Array, info: Record<string, any>|null }[],
  *   hasAlpha: boolean,
  *   keyApplied: boolean,
  * }}
@@ -362,8 +364,10 @@ export function convertUsm(bytes, { forceKey = true } = {}) {
   const audioKey = keys?.audioKey ?? null;
 
   const videoParts = new Map(); // type -> Uint8Array[]
+  const alphaParts = new Map(); // type -> Uint8Array[]
   const audioParts = new Map();
   const videoInfo = new Map(); // type -> @UTF row
+  const alphaInfo = new Map(); // type -> @UTF row
   const audioInfo = new Map();
   let hasAlpha = false;
 
@@ -374,6 +378,7 @@ export function convertUsm(bytes, { forceKey = true } = {}) {
       const rows = parseUtfTable(chunk.payload);
       const row = rows[0] ?? null;
       if (chunk.sig === "@SFV" && !videoInfo.has(chunk.type)) videoInfo.set(chunk.type, row);
+      if (chunk.sig === "@ALP" && !alphaInfo.has(chunk.type)) alphaInfo.set(chunk.type, row);
       if (chunk.sig === "@SFA" && !audioInfo.has(chunk.type)) audioInfo.set(chunk.type, row);
     }
 
@@ -388,7 +393,12 @@ export function convertUsm(bytes, { forceKey = true } = {}) {
       if (!audioParts.has(chunk.type)) audioParts.set(chunk.type, []);
       audioParts.get(chunk.type).push(chunk.payload);
     } else if (chunk.sig === "@ALP") {
-      // 알파(투명도) 스트림은 plan.md에서 정한 대로 첫 버전 범위에서 뺍니다. 있다는 사실만 기록합니다.
+      // @ALP도 @SFV와 같은 영상 XOR 규칙을 씁니다. 이 샘플들의 마스크는 MPEG-2 계열이고, ffmpeg의
+      // alphamerge가 이 회색조 영상을 주 영상의 알파 평면으로 합칩니다. 청크마다 앞 0x40바이트를
+      // 보존해야 하므로 먼저 전부 이어 붙인 뒤가 아니라 여기서 각각 복호화합니다.
+      const payload = videoKey ? decryptVideoPacket(chunk.payload, videoKey) : chunk.payload;
+      if (!alphaParts.has(chunk.type)) alphaParts.set(chunk.type, []);
+      alphaParts.get(chunk.type).push(payload);
       hasAlpha = true;
     }
   }
@@ -398,11 +408,12 @@ export function convertUsm(bytes, { forceKey = true } = {}) {
   }
 
   const videoTracks = buildTracks(videoParts, videoInfo);
+  const alphaTracks = buildTracks(alphaParts, alphaInfo);
   const audioTracks = buildAudioTracks(audioParts, audioInfo, audioKey);
 
   const sourceName = rawName.replace(/\.[^./\\]+$/, "").replace(/_no_encrypted$/i, "");
 
-  return { sourceName, videoTracks, audioTracks, hasAlpha, keyApplied };
+  return { sourceName, videoTracks, alphaTracks, audioTracks, hasAlpha, keyApplied };
 }
 
 /** 화면의 두 키 입력칸(32비트씩)을 하나의 64비트 BigInt로 합칩니다. hi가 상위 32비트입니다. */
@@ -419,6 +430,10 @@ function formatFrameRate(info) {
 
 function videoFileName(track, multiple) {
   return multiple ? `video_${track.type}.h264` : "video.h264";
+}
+
+function alphaFileName(track, multiple) {
+  return multiple ? `alpha_${track.type}.m2v` : "alpha.m2v";
 }
 
 function audioFileName(track) {
@@ -447,6 +462,21 @@ export function buildNextSteps(result, translate) {
   const tr = (key, values, fallback) => translate ? translate(key, values, fallback) : fallback;
   const multiVideo = result.videoTracks.length > 1;
   const rate = formatFrameRate(result.videoTracks[0]?.info) ?? 30;
+  const multiAlpha = result.alphaTracks?.length > 1;
+  const alphaTrack = result.alphaTracks?.[0] ?? null;
+  const alphaName = alphaTrack ? alphaFileName(alphaTrack, multiAlpha) : null;
+  const alphaRate = formatFrameRate(alphaTrack?.info) ?? rate;
+  const videoInputs = alphaTrack
+    ? `-framerate ${rate} -i ${videoFileName(result.videoTracks[0], multiVideo)} -framerate ${alphaRate} -i ${alphaName}`
+    : `-framerate ${rate} -i ${videoFileName(result.videoTracks[0], multiVideo)}`;
+  const videoFilter = alphaTrack
+    ? `-filter_complex "[1:v]format=gray[alpha];[0:v][alpha]alphamerge,format=yuva420p[v]"`
+    : "";
+  const videoMap = alphaTrack ? `-map "[v]"` : "-map 0:v:0";
+  // H.264는 알파 평면을 저장하지 못하므로, 알파가 있으면 Matroska 안에서 알파를 보존하는 무손실
+  // FFV1으로 다시 인코딩합니다. 결과 파일명은 알파 유무와 관계없이 항상 output.mkv로 둡니다.
+  const videoOutput = alphaTrack ? "-c:v ffv1 -level 3 -pix_fmt yuva420p" : "-c:v copy";
+  const audioStartIndex = alphaTrack ? 2 : 1;
   const steps = [];
 
   steps.push({
@@ -477,16 +507,16 @@ export function buildNextSteps(result, translate) {
   }
 
   const stepNum = result.audioTracks.length > 0 ? 3 : 2;
-  const videoName = videoFileName(result.videoTracks[0], multiVideo);
-
   if (knownAudio.length === 0) {
     steps.push({
       title: tr("usm.steps.videoOnly.title", { number: stepNum }, `${stepNum}. 영상만 재생 가능한 파일로 바꾸기`),
       body:
-        result.audioTracks.length === 0
+        alphaTrack
+          ? tr("usm.steps.videoOnly.alpha", {}, "알파 마스크를 영상에 합쳐 무손실 FFV1 MKV로 만듭니다. 파일이 원본 H.264 MKV보다 커질 수 있습니다.")
+          : result.audioTracks.length === 0
           ? tr("usm.steps.videoOnly.noAudio", {}, "이 USM에는 오디오가 없어 영상만 그대로 담으면 됩니다.")
           : tr("usm.steps.videoOnly.unknownAudio", {}, "오디오 형식을 알아내지 못해 우선 영상만 담습니다. 위에서 오디오 형식을 확인한 뒤 필요하면 이 MKV에 나중에 소리를 더할 수 있습니다."),
-      commands: [{ label: tr("usm.steps.videoOnly.label", {}, "MKV로 담기"), text: `ffmpeg -framerate ${rate} -i ${videoName} -c:v copy output.mkv` }],
+      commands: [{ label: tr("usm.steps.videoOnly.label", {}, "MKV로 담기"), text: `ffmpeg ${videoInputs} ${videoFilter} ${videoMap} ${videoOutput} output.mkv`.replace(/  +/g, " ") }],
     });
   } else if (knownAudio.length === 1) {
     const wav = wavFileName(knownAudio[0]);
@@ -495,26 +525,28 @@ export function buildNextSteps(result, translate) {
       commands: [
         {
           label: tr("usm.steps.oneAudio.label", {}, "합치기"),
-          text: `ffmpeg -framerate ${rate} -i ${videoName} -i ${wav} -map 0:v:0 -map 1:a:0 -c:v copy -c:a flac output.mkv`,
+          text: `ffmpeg ${videoInputs} -i ${wav} ${videoFilter} ${videoMap} -map ${audioStartIndex}:a:0 ${videoOutput} -c:a flac output.mkv`.replace(/  +/g, " "),
         },
       ],
     });
   } else {
     const wavs = knownAudio.map(wavFileName);
     const inputs = wavs.map((w) => `-i ${w}`).join(" ");
-    const maps = knownAudio.map((_, i) => `-map ${i + 1}:a:0`).join(" ");
-    const mixInputs = knownAudio.map((_, i) => `[${i + 1}:a]`).join("");
+    const maps = knownAudio.map((_, i) => `-map ${i + audioStartIndex}:a:0`).join(" ");
+    const mixInputs = knownAudio.map((_, i) => `[${i + audioStartIndex}:a]`).join("");
     steps.push({
       title: tr("usm.steps.multiAudio.title", { number: stepNum, count: knownAudio.length }, `${stepNum}. 영상 + 소리 ${knownAudio.length}개를 하나의 MKV로 합치기`),
       body: tr("usm.steps.multiAudio.body", { wavs: wavs.join(", ") }, `오디오 트랙(${wavs.join(", ")})을 서로 다른 트랙으로 그대로 두는 방법과, 하나로 믹스해 담는 방법 중 골라 쓰세요.`),
       commands: [
         {
           label: tr("usm.steps.multiAudio.separate", {}, "트랙을 따로 유지 (플레이어에서 오디오 트랙 선택 가능)"),
-          text: `ffmpeg -framerate ${rate} -i ${videoName} ${inputs} -map 0:v:0 ${maps} -c:v copy -c:a flac output.mkv`,
+          text: `ffmpeg ${videoInputs} ${inputs} ${videoFilter} ${videoMap} ${maps} ${videoOutput} -c:a flac output.mkv`.replace(/  +/g, " "),
         },
         {
           label: tr("usm.steps.multiAudio.mix", {}, "하나로 믹스해서 담기"),
-          text: `ffmpeg -framerate ${rate} -i ${videoName} ${inputs} -filter_complex "${mixInputs}amix=inputs=${knownAudio.length}:duration=longest[a]" -map 0:v:0 -map "[a]" -c:v copy -c:a flac output.mkv`,
+          text: alphaTrack
+            ? `ffmpeg ${videoInputs} ${inputs} -filter_complex "[1:v]format=gray[alpha];[0:v][alpha]alphamerge,format=yuva420p[v];${mixInputs}amix=inputs=${knownAudio.length}:duration=longest[a]" -map "[v]" -map "[a]" ${videoOutput} -c:a flac output.mkv`.replace(/  +/g, " ")
+            : `ffmpeg ${videoInputs} ${inputs} -filter_complex "${mixInputs}amix=inputs=${knownAudio.length}:duration=longest[a]" -map 0:v:0 -map "[a]" ${videoOutput} -c:a flac output.mkv`,
         },
       ],
     });
@@ -570,6 +602,18 @@ export function buildUsmReadme(result, translate) {
       );
     }
   }
+  for (const track of result.alphaTracks ?? []) {
+    const info = track.info;
+    lines.push(`${alphaFileName(track, (result.alphaTracks?.length ?? 0) > 1)}  (${tr("usm.readme.bytes", { count: track.bytes.length.toLocaleString() }, `${track.bytes.length.toLocaleString()} 바이트`)}, ${tr("usm.readme.alphaStream", {}, "알파 마스크")})`);
+    if (info) {
+      const rate = formatFrameRate(info);
+      lines.push(
+        `  ${tr("usm.readme.resolution", { width: info.width, height: info.height }, `해상도 ${info.width}x${info.height}`)}` +
+          (rate ? `, ${rate}fps` : "") +
+          (info.total_frames ? `, ${tr("usm.readme.frames", { count: info.total_frames }, `총 ${info.total_frames}프레임`)}` : ""),
+      );
+    }
+  }
   lines.push("");
 
   for (const track of result.audioTracks) {
@@ -589,8 +633,8 @@ export function buildUsmReadme(result, translate) {
   lines.push("");
 
   if (result.hasAlpha) {
-    lines.push(tr("usm.readme.alpha", {}, "이 USM에는 알파(투명도) 스트림도 있지만, 첫 버전 범위에서 제외해 꺼내지 않았습니다."));
-    lines.push(tr("usm.readme.alphaDetail", {}, "(합성 없이 RGB 영상만 재생해도 화면상 이상은 없고, 배경 투명 효과만 빠집니다.)"));
+    lines.push(tr("usm.readme.alpha", {}, "알파(투명도) 스트림을 alpha.m2v로 추출했습니다."));
+    lines.push(tr("usm.readme.alphaDetail", {}, "다음 단계의 ffmpeg 명령은 이 마스크를 RGB 영상에 합쳐 알파를 보존하는 output.mkv를 만듭니다."));
     lines.push("");
   }
 

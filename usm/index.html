@@ -48,7 +48,7 @@
         <span class="btn primary" aria-hidden="true" data-i18n="common.selectFile">파일 선택</span>
       </label>
       <p class="status" id="status" role="status" aria-live="polite"></p>
-      <p class="hint" data-i18n="usm.hint">영상은 H.264, 소리는 HCA 그대로 나옵니다. 직접 재생할 수 있는 형태가 아니라, "다음 단계" 탭에서 안내하는 대로 vgmstream과 ffmpeg로 합쳐야 재생 가능한 MKV가 됩니다. 영상은 항상 알려진 키로 자동 복호화합니다. 결과가 이상하면 결과 화면에서 "키 없이 다시 변환"으로 원본 바이트를 그대로 받아볼 수 있습니다. 알파(투명도) 채널 합성은 아직 지원하지 않습니다. 파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.</p>
+      <p class="hint" data-i18n="usm.hint">영상은 H.264, 소리는 HCA 그대로 나옵니다. 직접 재생할 수 있는 형태가 아니라, "다음 단계" 탭에서 안내하는 대로 vgmstream과 ffmpeg로 합쳐야 재생 가능한 MKV가 됩니다. 알파 스트림이 있으면 함께 꺼내며, 안내 명령이 알파를 보존하는 output.mkv를 만듭니다. 영상은 항상 알려진 키로 자동 복호화합니다. 결과가 이상하면 결과 화면에서 "키 없이 다시 변환"으로 원본 바이트를 그대로 받아볼 수 있습니다. 파일은 이 컴퓨터 안에서만 처리되고 어디로도 전송되지 않습니다.</p>
     </section>
 
     <section class="tab-panel" id="panel-result" role="tabpanel" aria-labelledby="tab-result" hidden>
@@ -64,7 +64,7 @@
       </div>
       <p class="notice" id="key-note"></p>
       <ul class="usm-summary" id="usm-summary"></ul>
-      <p class="notice" id="alpha-note" hidden data-i18n="usm.alphaNote">이 USM에는 알파(투명도) 스트림도 있지만, 첫 버전에서는 합성 없이 RGB 영상만 꺼냅니다. (재생 자체는 정상이고, 배경 투명 효과만 빠집니다.)</p>
+      <p class="notice" id="alpha-note" hidden data-i18n="usm.alphaNote">알파(투명도) 스트림도 alpha.m2v로 함께 꺼냈습니다. 다음 단계의 ffmpeg 명령은 이 마스크를 합쳐 알파를 보존하는 output.mkv를 만듭니다.</p>
     </section>
 
     <section class="tab-panel" id="panel-next" role="tabpanel" aria-labelledby="tab-next" hidden>

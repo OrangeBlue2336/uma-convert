@@ -38,4 +38,13 @@ export const tools = [
     image: "assets/img/tile/tile-usm.png",
     status: "ready",
   },
+  {
+    titleKey: "tool.mdb.title",
+    descKey: "tool.mdb.desc",
+    inputKey: "tool.mdb.input",
+    outputKey: "tool.mdb.output",
+    href: "mdb/",
+    image: "assets/img/tile/tile-mdb.png",
+    status: "ready",
+  },
 ];

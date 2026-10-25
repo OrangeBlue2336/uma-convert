@@ -1,0 +1,255 @@
+{
+  "mdb": {
+    "title": "master.mdb 탐색기 - UmaConvert",
+    "crumb": "master.mdb 탐색",
+    "heading": "master.mdb 탐색기",
+    "lede": "게임 데이터베이스(master.mdb)를 열어 안의 표를 훑어보고, 숫자 코드를 이름과 링크로 풀어 보며, 두 버전의 차이를 비교합니다.",
+    "drop": "master.mdb 파일을 여기에 끌어다 놓으세요",
+    "hint": ".mdb라는 이름이지만 실제로는 SQLite 파일이며, 이 도구는 읽기만 합니다(원본을 바꾸지 않습니다). 40MB 정도의 파일도 브라우저 안에서 바로 열립니다. 숫자 코드의 이름 풀이와 링크는 사람이 확인해 둔 사전에 있는 것만 보여 주며, 사전에 없는 연결은 \"추정\"으로 따로 표시합니다. 파일은 이 기기 안에서만 처리되고 어디로도 전송되지 않습니다.",
+    "rows": "{n}행",
+    "tab": {
+      "tables": "테이블",
+      "search": "텍스트 검색",
+      "domains": "도메인 보기",
+      "diff": "버전 비교"
+    },
+    "open": {
+      "reading": "{name} 읽는 중…",
+      "loadingTexts": "텍스트(text_data)를 불러오는 중…",
+      "factFile": "{name} ({size}MB)",
+      "factTables": "테이블 {n}개",
+      "factTexts": "텍스트 {n}개, 카테고리 {categories}개",
+      "noTexts": "text_data 테이블이 없어 이름 풀이와 텍스트 검색은 사용할 수 없습니다.",
+      "mapMissing": "매핑 사전(mdb-map.json)을 불러오지 못해 이름 풀이, 링크, 도메인 보기가 제한됩니다."
+    },
+    "tables": {
+      "search": "테이블 이름 검색",
+      "count": "{shown} / {total}개 (◆ = 이름 풀이 있음)",
+      "loading": "{name} 읽는 중…",
+      "loadingProgress": "{name} 읽는 중… {done} / {total}행",
+      "nameColumn": "이름",
+      "filterPlaceholder": "필터",
+      "filterOf": "{column} 필터",
+      "editLabels": "이 컬럼의 값 라벨 편집",
+      "info": "{total}행 · {cols}열",
+      "infoFiltered": "{shown}행 표시 (전체 {total}행) · {cols}열",
+      "page": "{page} / {pages} 쪽",
+      "csv": "CSV 저장",
+      "json": "JSON 저장",
+      "globalFilter": "이 표 전체에서 검색",
+      "pageSize": "한 페이지",
+      "columns": "열 보이기",
+      "colAll": "모두 보기",
+      "colNone": "첫 열만",
+      "exportDisplay": "저장할 때 이름·날짜 풀이 포함",
+      "filterHint": "열 아래 입력칸 문법: 글자(포함) · =값(정확히 일치) · >숫자 · <숫자 · !글자(제외). 시간은 JST(UTC+9) 기준입니다."
+    },
+    "search": {
+      "hint": "text_data(이름, 설명 등 모든 글자)에서 검색합니다. 번호(예: 200011)를 넣으면 그 번호를 가진 텍스트를 찾습니다. 결과의 [열기]는 그 텍스트의 주인 행으로 이동합니다.",
+      "placeholder": "찾을 글자나 번호",
+      "categoryLabel": "카테고리",
+      "allCategories": "모든 카테고리",
+      "open": "열기",
+      "noCandidate": "자동 후보 없음",
+      "findOwner": "주인 테이블 후보 찾기",
+      "finding": "찾는 중…",
+      "none": "결과가 없습니다.",
+      "count": "{total}건",
+      "limited": "{total}건 중 {shown}건만 표시합니다. 검색어를 더 좁히거나 카테고리를 골라 보세요.",
+      "col": {
+        "category": "카테고리",
+        "index": "번호",
+        "text": "텍스트",
+        "owner": "이동"
+      },
+      "weakTitle": "번호는 모두 이 테이블에 있지만 이 테이블 행의 {percent}%만 텍스트를 가진 약한 후보입니다."
+    },
+    "domains": {
+      "label": "도메인",
+      "search": "이름 또는 번호로 찾기",
+      "none": "이 파일에는 도메인 보기에 쓸 수 있는 테이블이 없습니다.",
+      "pick": "위에서 도메인을 고르세요.",
+      "pickEntity": "왼쪽 목록에서 항목을 고르세요.",
+      "loading": "목록을 읽는 중…",
+      "listCount": "{total}개",
+      "listLimited": "{total}개 중 {shown}개만 표시합니다. 검색으로 좁혀 보세요.",
+      "sectionLimited": "{total}행 중 {shown}행",
+      "sectionEmpty": "연결된 행이 없습니다.",
+      "viewAll": "{table}에서 전체 보기",
+      "openRow": "행 상세",
+      "textsAuto": "추정 텍스트 {n}개 (사전에 없음)",
+      "textsWeak": "약한 추정 텍스트 {n}개 (일부 항목만 가짐)"
+    },
+    "domain": {
+      "chara": {
+        "title": "캐릭터",
+        "section": {
+          "cards": "육성 우마무스메(승부복)",
+          "supports": "서포트 카드"
+        }
+      },
+      "card": {
+        "title": "육성 우마무스메(승부복)",
+        "section": {
+          "rarity": "레어도별 능력·적성",
+          "skills": "보유 스킬 세트",
+          "upgrades": "스킬 강화"
+        }
+      },
+      "support": {
+        "title": "서포트 카드",
+        "section": {
+          "effects": "효과 수치",
+          "unique": "고유 효과",
+          "skillset": "힌트 스킬 세트"
+        }
+      },
+      "skill": {
+        "title": "스킬",
+        "section": {
+          "conditions": "발동 조건과 효과",
+          "siblings": "같은 그룹의 스킬",
+          "holders": "이 스킬을 가진 육성 우마무스메(승부복)",
+          "upgrades": "스킬 강화",
+          "holdersGroup": "같은 그룹의 다른 스킬을 가진 육성 우마무스메(승부복)",
+          "hints": "이 스킬을 힌트로 주는 서포트 카드",
+          "hintsGroup": "같은 그룹의 다른 스킬을 힌트로 주는 서포트 카드"
+        },
+        "sectionHint": {
+          "holders": "육성 우마무스메의 보유 스킬 세트(available_skill_set)에서 찾습니다.",
+          "holdersGroup": "같은 스킬 그룹에는 등급이 다른 스킬이 함께 묶여 있습니다. 이 스킬 자체는 없지만 같은 그룹의 다른 스킬을 가진 경우입니다. 이미 위에 나온 승부복은 뺐습니다.",
+          "hints": "서포트 카드의 힌트 스킬 목록(single_mode_hint_gain)에서 찾습니다.",
+          "hintsGroup": "서포트 카드는 같은 스킬 그룹 안에서 등급이 다른 쪽(예: 202711은 rarity 2, 202712는 rarity 1)만 힌트로 주는 경우가 있어서, 이 스킬 자체는 없지만 같은 그룹의 다른 스킬을 힌트로 주는 카드를 따로 모았습니다. 위에 나온 카드는 뺐고, 그룹의 구성은 \"같은 그룹의 스킬\" 구역에서 볼 수 있습니다."
+        }
+      },
+      "race": {
+        "title": "레이스",
+        "section": {
+          "race": "레이스 정보",
+          "course": "코스",
+          "instances": "같은 레이스의 다른 개최"
+        }
+      },
+      "mission": {
+        "title": "미션",
+        "section": {
+          "steps": "같은 단계 묶음의 미션"
+        }
+      }
+    },
+    "role": {
+      "name": "이름",
+      "cv": "성우",
+      "dorm": "기숙사",
+      "catch": "소개 문구",
+      "birthday": "생일",
+      "height": "키",
+      "grade": "소속 부",
+      "intro": "자기소개",
+      "shoes": "신발 사이즈",
+      "nameEn": "영문 이름",
+      "nickname": "별칭",
+      "title": "칭호",
+      "charaName": "캐릭터 이름",
+      "desc": "설명",
+      "nameShort": "약칭",
+      "weight": "체중",
+      "strengths": "잘하는 것",
+      "weaknesses": "어려워하는 것",
+      "ears": "귀",
+      "tail": "꼬리",
+      "family": "가족 이야기",
+      "ownRule": "자신만의 규칙",
+      "wallpaper": "스마트폰 배경화면",
+      "preRace": "출전 전에는…",
+      "bestSubject": "잘하는 과목",
+      "secretBoast": "은밀한 자랑거리",
+      "oftenBuys": "자주 사는 것",
+      "valentineMale": "발렌타인 데이 메시지 (남성 트레이너)",
+      "valentineFemale": "발렌타인 데이 메시지 (여성 트레이너)",
+      "valentineName": "발렌타인 데이 초콜릿 이름",
+      "TPfullNotif": "TP 충전 알림",
+      "RPfullNotif": "RP 충전 알림",
+      "tourEndNotif": "전국투어 종료 알림",
+      "independentEndNotif": "자율 육성 종료 알림"
+    },
+    "drawer": {
+      "label": "행 상세",
+      "back": "← 뒤로",
+      "close": "닫기",
+      "missing": "이 행을 찾을 수 없습니다.",
+      "openTable": "테이블에서 보기",
+      "openDomain": "{name}에서 보기",
+      "hideEmpty": "0과 빈 값 숨기기",
+      "texts": "연결된 텍스트 (text_data)",
+      "textsHint": "확정된 항목은 이름 풀이 사전에 등록된 카테고리이고, 추정은 번호가 이 테이블과 크게 겹치는 카테고리입니다.",
+      "textsAuto": "추정 (사전에 없음)",
+      "textsOther": "번호만 같은 텍스트 {n}개",
+      "textsOtherHint": "다른 테이블의 텍스트가 번호만 우연히 같은 것일 가능성이 큽니다.",
+      "category": "카테고리",
+      "refs": "이 항목을 가리키는 곳",
+      "refsHint": "사전에 등록된 참조 컬럼만 찾습니다. 처음 한 번은 관련 테이블을 모두 훑어 몇 초 걸릴 수 있습니다.",
+      "refsFind": "찾기",
+      "refsRunning": "찾는 중…",
+      "refsProgress": "찾는 중… {done} / {total}",
+      "refsFound": "{n}개 테이블에서 발견",
+      "refsNone": "가리키는 곳이 없습니다.",
+      "textsWeak": "일부 항목만 가진 추정 {n}개",
+      "textsWeakHint": "이 카테고리의 번호는 모두 이 테이블 id에 있지만 테이블의 일부 행에만 텍스트가 있습니다(예: 새 캐릭터에만 있는 항목). 맞는 경우가 많아도 같은 조건으로 엉뚱한 테이블에 걸리기도 해서 확정은 아닙니다. 맞다고 확인되면 mdb-map.json의 tables에 등록하세요. 오른쪽 퍼센트는 이 테이블 행 중 이 카테고리를 가진 비율입니다."
+    },
+    "labels": {
+      "title": "값 라벨: {column}",
+      "hint": "숫자 코드의 뜻을 직접 적어 두면 표와 상세에서 함께 보입니다. 이 브라우저에만 저장되며, JSON으로 내보내 다른 곳에서 불러올 수 있습니다.",
+      "placeholder": "뜻",
+      "save": "저장",
+      "cancel": "취소",
+      "export": "전체 라벨 내보내기",
+      "import": "라벨 불러오기",
+      "importError": "라벨 파일을 읽지 못했습니다. 내보내기로 만든 JSON 파일인지 확인하세요."
+    },
+    "diff": {
+      "hint": "지금 연 파일을 \"새 버전\"으로 보고, 아래에 올리는 파일을 \"이전 버전\"으로 비교합니다. 추가·삭제·변경된 행을 테이블별로 보여 주고, 스킬·카드 같은 주요 항목의 새 이름을 맨 위에 모아 줍니다. 방향이 반대면 [서로 바꾸기]를 누르세요.",
+      "drop": "비교할 이전 버전 master.mdb를 여기에 놓으세요",
+      "reading": "{name} 읽는 중…",
+      "loadingTexts": "이전 버전의 텍스트를 불러오는 중…",
+      "running": "비교 중… {done} / {total} · {name}",
+      "files": "이전: {oldName} → 새: {newName}",
+      "totals": "바뀐 테이블 {tables}개 · 추가 {added}행 · 삭제 {removed}행 · 변경 {changed}행 · 새 테이블 {addedTables}개 · 사라진 테이블 {removedTables}개",
+      "errors": "{n}개 테이블은 비교하지 못했습니다: {names}",
+      "addedTables": "새로 생긴 테이블",
+      "removedTables": "사라진 테이블",
+      "entities": "주요 항목의 추가/삭제",
+      "col": {
+        "table": "테이블",
+        "added": "추가",
+        "removed": "삭제",
+        "changed": "변경"
+      },
+      "schemaChanged": "컬럼 구조 변경",
+      "typeChanged": "타입 변경",
+      "rowCounts": "이전 {oldCount}행 → 새 {newCount}행 · 비교 기준 키: {keys}",
+      "noKey": "없음(내용이 같은 행끼리 짝지음)",
+      "tab": {
+        "added": "추가",
+        "removed": "삭제",
+        "changed": "변경"
+      },
+      "limited": "{total}건 중 {shown}건만 표시합니다.",
+      "swap": "서로 바꾸기",
+      "onlyChanged": "바뀐 테이블만 보기",
+      "pick": "왼쪽에서 테이블을 고르세요."
+    },
+    "error": {
+      "unexpected": "예상하지 못한 오류가 발생했습니다: {message}"
+    }
+  },
+  "error": {
+    "sqlite": {
+      "notSqlite": "SQLite 파일이 아닙니다. 파일 머리글: \"{head}\". 암호화되었거나 다른 종류의 파일일 수 있습니다.",
+      "corrupt": "SQLite 파일이 손상되었거나 지원하지 않는 구조입니다: {detail}",
+      "encoding": "UTF-16으로 저장된 SQLite 파일은 지원하지 않습니다.",
+      "noTable": "테이블 \"{name}\"이(가) 없습니다.",
+      "withoutRowid": "테이블 \"{name}\"은(는) WITHOUT ROWID라 지원하지 않습니다."
+    }
+  }
+}
